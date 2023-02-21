@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 """
 This experiment was created using PsychoPy3 Experiment Builder (v2022.2.5),
-    on February 03, 2023, at 13:54
+    on februari 21, 2023, at 13:09
 If you publish work using this script the most relevant publication is:
 
     Peirce J, Gray JR, Simpson S, MacAskill M, Höchenberger R, Sogo H, Kastman E, Lindeløv JK. (2019) 
@@ -14,7 +14,7 @@ If you publish work using this script the most relevant publication is:
 # --- Import packages ---
 from psychopy import locale_setup
 from psychopy import prefs
-from psychopy import sound, gui, visual, core, data, event, logging, clock, colors, layout
+from psychopy import sound, gui, visual, core, data, event, logging, clock, colors, layout, parallel, iohub, hardware
 from psychopy.constants import (NOT_STARTED, STARTED, PLAYING, PAUSED,
                                 STOPPED, FINISHED, PRESSED, RELEASED, FOREVER)
 
@@ -54,8 +54,8 @@ filename = _thisDir + os.sep + u'data/%s_%s_%s' % (expInfo['participant'], expNa
 # An ExperimentHandler isn't essential but helps with data saving
 thisExp = data.ExperimentHandler(name=expName, version='',
     extraInfo=expInfo, runtimeInfo=None,
-    originPath='C:\\Users\\15202\\OneDrive\\C_\\University of Amsterdam\\Intern\\EEG_TargetDetection_Experiment.py',
-    savePickle=True, saveWideText=True,
+    originPath='D:\\Users\\Niklas\\eeg_experiment-main\\EEG_TargetDetection_Experiment.py',
+    savePickle=True, saveWideText=False,
     dataFileName=filename)
 # save a log file for detail verbose info
 logFile = logging.LogFile(filename+'.log', level=logging.EXP)
@@ -68,9 +68,9 @@ frameTolerance = 0.001  # how close to onset before 'same' frame
 
 # --- Setup the Window ---
 win = visual.Window(
-    size=[1368, 912], fullscr=True, screen=0, 
+    size=[2560, 1440], fullscr=True, screen=1, 
     winType='pyglet', allowStencil=False,
-    monitor='Surface', color=[0,0,0], colorSpace='rgb',
+    monitor='testMonitor', color=[0,0,0], colorSpace='rgb',
     blendMode='avg', useFBO=True, 
     units='height')
 win.mouseVisible = False
@@ -83,6 +83,28 @@ else:
 # --- Setup input devices ---
 ioConfig = {}
 
+# Setup eyetracking
+ioConfig['eyetracker.hw.sr_research.eyelink.EyeTracker'] = {
+    'name': 'tracker',
+    'model_name': 'EYELINK 1000 DESKTOP',
+    'simulation_mode': False,
+    'network_settings': '100.1.1.1',
+    'default_native_data_file_name': 'EXPFILE',
+    'runtime_settings': {
+        'sampling_rate': 1000.0,
+        'track_eyes': 'RIGHT_EYE',
+        'sample_filtering': {
+            'sample_filtering': 'FILTER_LEVEL_2',
+            'elLiveFiltering': 'FILTER_LEVEL_OFF',
+        },
+        'vog_settings': {
+            'pupil_measure_types': 'PUPIL_DIAMETER',
+            'tracking_mode': 'PUPIL_CR_TRACKING',
+            'pupil_center_algorithm': 'CENTROID_FIT',
+        }
+    }
+}
+
 # Setup iohub keyboard
 ioConfig['Keyboard'] = dict(use_keymap='psychopy')
 
@@ -90,7 +112,7 @@ ioSession = '1'
 if 'session' in expInfo:
     ioSession = str(expInfo['session'])
 ioServer = io.launchHubServer(window=win, **ioConfig)
-eyetracker = None
+eyetracker = ioServer.getDevice('tracker')
 
 # create a default keyboard (e.g. to check for escape)
 defaultKeyboard = keyboard.Keyboard(backend='iohub')
@@ -101,12 +123,15 @@ import pandas as pd
 
 #Set the global file path
 #files_path = r"C:\Users\15202\OneDrive\C_\University of Amsterdam\Intern\\"
-files_path= os.path.join("C:\\", "Users", "15202", "OneDrive", "C_", "University of Amsterdam", "Intern")
+#
+files_path= os.path.join("D:\\", "Users", "Niklas", "eeg_experiment-main")
+#images_path = os.path.join("Y:\\", "Projects", "2023_Scholte_FMG1441", "Stimuli")
 
 with open(os.path.join(files_path, "Instruction.md"), 'r') as instruction_file:     #Load the instruction markdown file
     instruction_text = instruction_file.read()          #save the text
 
 eeg_trial_num = 0   #Track with the current trial
+cur_triger = 0
 images_per_trial = 20
 trials_per_block = 5
 blocks_per_repetition = 2
@@ -120,10 +145,11 @@ image_w = win.size[0]           #Set the screen width as the width of images
 aspect_ratio = orig_image_height/orig_image_width       #Set the aspect ratio of image
 image_h = int(image_w * aspect_ratio)     #Set the height of images
 
-len_blank_long = 4          #The length of blank screen before showing any images 
-len_blank_short = 0.6       #The length of blank screen after every images
+len_blank_long = 3          #The length of blank screen before showing any images 
+len_blank_short = 0.4       #The length of blank screen after every images
 
 #Get the list of all images' file name
+#Images_name_list = os.listdir(images_path)
 Images_name_list = os.listdir(os.path.join(files_path, "Stimuli"))
 
 # NOTICE: The Images from the list are not in numerical order, 
@@ -163,6 +189,7 @@ blank_screen = visual.Rect(
     ori=0.0, pos=(0, 0), anchor='center',
     lineWidth=1.0,     colorSpace='rgb',  lineColor='gray', fillColor='gray',
     opacity=None, depth=0.0, interpolate=True)
+gray_trigger = parallel.ParallelPort(address='0x4050')
 preload_cur_image = clock.StaticPeriod(win=win, screenHz=expInfo['frameRate'], name='preload_cur_image')
 Images = visual.ImageStim(
     win=win,
@@ -171,13 +198,14 @@ Images = visual.ImageStim(
     ori=0.0, pos=(0, 0), size=[image_w, image_h],
     color=[1,1,1], colorSpace='rgb', opacity=None,
     flipHoriz=True, flipVert=False,
-    texRes=128.0, interpolate=True, depth=-2.0)
+    texRes=128.0, interpolate=True, depth=-3.0)
+Image_trigger = parallel.ParallelPort(address='0x4050')
 cross = visual.ShapeStim(
     win=win, name='cross', vertices='cross',
     size=(0.01, 0.01),
     ori=0.0, pos=(0, 0), anchor='center',
     lineWidth=1.0,     colorSpace='rgb',  lineColor='red', fillColor='red',
-    opacity=None, depth=-3.0, interpolate=True)
+    opacity=None, depth=-5.0, interpolate=True)
 
 # --- Initialize components for Routine "Response" ---
 blank_screen_last = visual.Rect(
@@ -219,7 +247,7 @@ text_3 = visual.TextStim(win=win, name='text_3',
     languageStyle='LTR',
     depth=-1.0);
 
-# --- Initialize components for Routine "End" ---
+# --- Initialize components for Routine "End_of_Block" ---
 text_4 = visual.TextStim(win=win, name='text_4',
     text='',
     font='Open Sans',
@@ -227,6 +255,23 @@ text_4 = visual.TextStim(win=win, name='text_4',
     color='white', colorSpace='rgb', opacity=None, 
     languageStyle='LTR',
     depth=-1.0);
+Rest = visual.TextStim(win=win, name='Rest',
+    text='Please take a rest for 10 seconds',
+    font='Open Sans',
+    pos=(0, 0), height=0.05, wrapWidth=None, ori=0.0, 
+    color='white', colorSpace='rgb', opacity=None, 
+    languageStyle='LTR',
+    depth=-2.0);
+PressKey_to_Continue = visual.TextStim(win=win, name='PressKey_to_Continue',
+    text='Press ENTER to continue',
+    font='Open Sans',
+    pos=(0, 0), height=0.05, wrapWidth=None, ori=0.0, 
+    color='white', colorSpace='rgb', opacity=None, 
+    languageStyle='LTR',
+    depth=-3.0);
+key_resp_2 = keyboard.Keyboard()
+
+# --- Initialize components for Routine "End_of_Experiment" ---
 
 # Create some handy timers
 globalClock = core.Clock()  # to track the time since experiment started
@@ -334,7 +379,7 @@ for thisRepetition in Repetition:
         # update/draw components on each frame
         
         # *Intro* updates
-        if Intro.status == NOT_STARTED and tThisFlip >= 0.0-frameTolerance:
+        if Intro.status == NOT_STARTED and tThisFlip >= 0-frameTolerance:
             # keep track of start time/frame for later
             Intro.frameNStart = frameN  # exact frame index
             Intro.tStart = t  # local t and not account for scr refresh
@@ -444,6 +489,7 @@ for thisRepetition in Repetition:
         # update component parameters for each repeat
         # Run 'Begin Routine' code from Cor_initialization
         num_correct = 0     #For every block, initialize the number of correct answers
+        
         # keep track of which components have finished
         Correctness_InitializationComponents = []
         for thisComponent in Correctness_InitializationComponents:
@@ -524,6 +570,7 @@ for thisRepetition in Repetition:
             cur_sequence = pd.read_csv(os.path.join(files_path, "Randomized matrix.csv"), header = None, skiprows = list(range(0,eeg_trial_num)) + list(range(eeg_trial_num+1,max_trial)) )
             cur_sequence_images = [Images_name_list[cur_sequence.iloc[0, i]] for i in range(images_per_trial) ]     #Use the indexs to get the images' name
             cur_sequence_images = [ "Stimuli\\" + i for i in cur_sequence_images]
+            #cur_sequence_images = [ os.path.join(images_path, i) for i in cur_sequence_images]
             
             #Load the csv file which contain the correct answers for each trial, 
             #each row contains one answer for a trial, the value should be either 'y' or 'n',
@@ -539,7 +586,13 @@ for thisRepetition in Repetition:
             #Save the current images list into the loop file
             cur_sequence_images.to_csv(os.path.join(files_path, "loopTemplate.csv"),index=False)
             
+            #import PIL.Image
+            #current_images = []
+            #for image_index in range(20):
+            #    img = Image.open(filenames[image_index])
+            #    current_images.append(img)
             
+            gray_trigger_index = 251
             # keep track of which components have finished
             Load_current_trial_infoComponents = []
             for thisComponent in Load_current_trial_infoComponents:
@@ -612,7 +665,7 @@ for thisRepetition in Repetition:
                 routineForceEnded = False
                 # update component parameters for each repeat
                 # keep track of which components have finished
-                Preload_and_Blank_ScreenComponents = [blank_screen, preload_cur_image, Images, cross]
+                Preload_and_Blank_ScreenComponents = [blank_screen, gray_trigger, preload_cur_image, Images, Image_trigger, cross]
                 for thisComponent in Preload_and_Blank_ScreenComponents:
                     thisComponent.tStart = None
                     thisComponent.tStop = None
@@ -653,6 +706,26 @@ for thisRepetition in Repetition:
                             # add timestamp to datafile
                             thisExp.timestampOnFlip(win, 'blank_screen.stopped')
                             blank_screen.setAutoDraw(False)
+                    # *gray_trigger* updates
+                    if gray_trigger.status == NOT_STARTED and blank_screen.status == STARTED:
+                        # keep track of start time/frame for later
+                        gray_trigger.frameNStart = frameN  # exact frame index
+                        gray_trigger.tStart = t  # local t and not account for scr refresh
+                        gray_trigger.tStartRefresh = tThisFlipGlobal  # on global time
+                        win.timeOnFlip(gray_trigger, 'tStartRefresh')  # time at next scr refresh
+                        # add timestamp to datafile
+                        thisExp.timestampOnFlip(win, 'gray_trigger.started')
+                        gray_trigger.status = STARTED
+                        win.callOnFlip(gray_trigger.setData, int(gray_trigger_index))
+                    if gray_trigger.status == STARTED:
+                        if frameN >= (gray_trigger.frameNStart + 1):
+                            # keep track of stop time/frame for later
+                            gray_trigger.tStop = t  # not accounting for scr refresh
+                            gray_trigger.frameNStop = frameN  # exact frame index
+                            # add timestamp to datafile
+                            thisExp.timestampOnFlip(win, 'gray_trigger.stopped')
+                            gray_trigger.status = FINISHED
+                            win.callOnFlip(gray_trigger.setData, int(gray_trigger_index))
                     
                     # *Images* updates
                     if Images.status == NOT_STARTED and preload_cur_image.status==FINISHED:
@@ -673,6 +746,26 @@ for thisRepetition in Repetition:
                             # add timestamp to datafile
                             thisExp.timestampOnFlip(win, 'Images.stopped')
                             Images.setAutoDraw(False)
+                    # *Image_trigger* updates
+                    if Image_trigger.status == NOT_STARTED and Images.status == STARTED:
+                        # keep track of start time/frame for later
+                        Image_trigger.frameNStart = frameN  # exact frame index
+                        Image_trigger.tStart = t  # local t and not account for scr refresh
+                        Image_trigger.tStartRefresh = tThisFlipGlobal  # on global time
+                        win.timeOnFlip(Image_trigger, 'tStartRefresh')  # time at next scr refresh
+                        # add timestamp to datafile
+                        thisExp.timestampOnFlip(win, 'Image_trigger.started')
+                        Image_trigger.status = STARTED
+                        win.callOnFlip(Image_trigger.setData, int(cur_triger))
+                    if Image_trigger.status == STARTED:
+                        if frameN >= (Image_trigger.frameNStart + 1):
+                            # keep track of stop time/frame for later
+                            Image_trigger.tStop = t  # not accounting for scr refresh
+                            Image_trigger.frameNStop = frameN  # exact frame index
+                            # add timestamp to datafile
+                            thisExp.timestampOnFlip(win, 'Image_trigger.stopped')
+                            Image_trigger.status = FINISHED
+                            win.callOnFlip(Image_trigger.setData, int(cur_triger))
                     
                     # *cross* updates
                     if cross.status == NOT_STARTED and tThisFlip >= 0.0-frameTolerance:
@@ -685,8 +778,7 @@ for thisRepetition in Repetition:
                         thisExp.timestampOnFlip(win, 'cross.started')
                         cross.setAutoDraw(True)
                     if cross.status == STARTED:
-                        # is it time to stop? (based on global clock, using actual start)
-                        if tThisFlipGlobal > cross.tStartRefresh + 1.0-frameTolerance:
+                        if bool(Image_trigger.status==FINISHED):
                             # keep track of stop time/frame for later
                             cross.tStop = t  # not accounting for scr refresh
                             cross.frameNStop = frameN  # exact frame index
@@ -694,14 +786,14 @@ for thisRepetition in Repetition:
                             thisExp.timestampOnFlip(win, 'cross.stopped')
                             cross.setAutoDraw(False)
                     # *preload_cur_image* period
-                    if preload_cur_image.status == NOT_STARTED and t >= 0-frameTolerance:
+                    if preload_cur_image.status == NOT_STARTED and tThisFlip >= 0-frameTolerance:
                         # keep track of start time/frame for later
                         preload_cur_image.frameNStart = frameN  # exact frame index
                         preload_cur_image.tStart = t  # local t and not account for scr refresh
                         preload_cur_image.tStartRefresh = tThisFlipGlobal  # on global time
                         win.timeOnFlip(preload_cur_image, 'tStartRefresh')  # time at next scr refresh
                         # add timestamp to datafile
-                        thisExp.addData('preload_cur_image.started', t)
+                        thisExp.timestampOnFlip(win, 'preload_cur_image.started')
                         preload_cur_image.start(blank_len)
                     elif preload_cur_image.status == STARTED:  # one frame should pass before updating params and completing
                         # Updating other components during *preload_cur_image*
@@ -732,12 +824,32 @@ for thisRepetition in Repetition:
                 for thisComponent in Preload_and_Blank_ScreenComponents:
                     if hasattr(thisComponent, "setAutoDraw"):
                         thisComponent.setAutoDraw(False)
+                if gray_trigger.status == STARTED:
+                    win.callOnFlip(gray_trigger.setData, int(gray_trigger_index))
+                if Image_trigger.status == STARTED:
+                    win.callOnFlip(Image_trigger.setData, int(cur_triger))
+                # Run 'End Routine' code from trigger_update
+                gray_trigger_index = 253
+                if cur_triger == 255:
+                    cur_triger = 0
+                else:
+                    cur_triger += 1
+                
                 # the Routine "Preload_and_Blank_Screen" was not non-slip safe, so reset the non-slip timer
                 routineTimer.reset()
                 thisExp.nextEntry()
                 
             # completed 1.0 repeats of 'Sequences'
             
+            # get names of stimulus parameters
+            if Sequences.trialList in ([], [None], None):
+                params = []
+            else:
+                params = Sequences.trialList[0].keys()
+            # save data for this loop
+            Sequences.saveAsExcel(filename + '.xlsx', sheetName='Sequences',
+                stimOut=params,
+                dataOut=['n','all_mean','all_std', 'all_raw'])
             
             # --- Prepare to start Routine "Response" ---
             continueRoutine = True
@@ -990,6 +1102,15 @@ for thisRepetition in Repetition:
             
         # completed trials_per_block repeats of 'Trials'
         
+        # get names of stimulus parameters
+        if Trials.trialList in ([], [None], None):
+            params = []
+        else:
+            params = Trials.trialList[0].keys()
+        # save data for this loop
+        Trials.saveAsExcel(filename + '.xlsx', sheetName='Trials',
+            stimOut=params,
+            dataOut=['n','all_mean','all_std', 'all_raw'])
         
         # --- Prepare to start Routine "Feedback" ---
         continueRoutine = True
@@ -1070,7 +1191,7 @@ for thisRepetition in Repetition:
         else:
             routineTimer.addTime(-4.000000)
         
-        # --- Prepare to start Routine "End" ---
+        # --- Prepare to start Routine "End_of_Block" ---
         continueRoutine = True
         routineForceEnded = False
         # update component parameters for each repeat
@@ -1078,9 +1199,12 @@ for thisRepetition in Repetition:
         cur_block = int(eeg_trial_num / trials_per_block)
         block_end_text = "This the end of block " + str(cur_block)
         text_4.setText(block_end_text)
+        key_resp_2.keys = []
+        key_resp_2.rt = []
+        _key_resp_2_allKeys = []
         # keep track of which components have finished
-        EndComponents = [text_4]
-        for thisComponent in EndComponents:
+        End_of_BlockComponents = [text_4, Rest, PressKey_to_Continue, key_resp_2]
+        for thisComponent in End_of_BlockComponents:
             thisComponent.tStart = None
             thisComponent.tStop = None
             thisComponent.tStartRefresh = None
@@ -1092,8 +1216,8 @@ for thisRepetition in Repetition:
         _timeToFirstFrame = win.getFutureFlipTime(clock="now")
         frameN = -1
         
-        # --- Run Routine "End" ---
-        while continueRoutine and routineTimer.getTime() < 3.0:
+        # --- Run Routine "End_of_Block" ---
+        while continueRoutine and routineTimer.getTime() < 7.0:
             # get current time
             t = routineTimer.getTime()
             tThisFlip = win.getFutureFlipTime(clock=routineTimer)
@@ -1121,6 +1245,79 @@ for thisRepetition in Repetition:
                     thisExp.timestampOnFlip(win, 'text_4.stopped')
                     text_4.setAutoDraw(False)
             
+            # *Rest* updates
+            if Rest.status == NOT_STARTED and tThisFlip >= 3-frameTolerance:
+                # keep track of start time/frame for later
+                Rest.frameNStart = frameN  # exact frame index
+                Rest.tStart = t  # local t and not account for scr refresh
+                Rest.tStartRefresh = tThisFlipGlobal  # on global time
+                win.timeOnFlip(Rest, 'tStartRefresh')  # time at next scr refresh
+                # add timestamp to datafile
+                thisExp.timestampOnFlip(win, 'Rest.started')
+                Rest.setAutoDraw(True)
+            if Rest.status == STARTED:
+                # is it time to stop? (based on global clock, using actual start)
+                if tThisFlipGlobal > Rest.tStartRefresh + 2-frameTolerance:
+                    # keep track of stop time/frame for later
+                    Rest.tStop = t  # not accounting for scr refresh
+                    Rest.frameNStop = frameN  # exact frame index
+                    # add timestamp to datafile
+                    thisExp.timestampOnFlip(win, 'Rest.stopped')
+                    Rest.setAutoDraw(False)
+            
+            # *PressKey_to_Continue* updates
+            if PressKey_to_Continue.status == NOT_STARTED and tThisFlip >= 5-frameTolerance:
+                # keep track of start time/frame for later
+                PressKey_to_Continue.frameNStart = frameN  # exact frame index
+                PressKey_to_Continue.tStart = t  # local t and not account for scr refresh
+                PressKey_to_Continue.tStartRefresh = tThisFlipGlobal  # on global time
+                win.timeOnFlip(PressKey_to_Continue, 'tStartRefresh')  # time at next scr refresh
+                # add timestamp to datafile
+                thisExp.timestampOnFlip(win, 'PressKey_to_Continue.started')
+                PressKey_to_Continue.setAutoDraw(True)
+            if PressKey_to_Continue.status == STARTED:
+                # is it time to stop? (based on global clock, using actual start)
+                if tThisFlipGlobal > PressKey_to_Continue.tStartRefresh + 2-frameTolerance:
+                    # keep track of stop time/frame for later
+                    PressKey_to_Continue.tStop = t  # not accounting for scr refresh
+                    PressKey_to_Continue.frameNStop = frameN  # exact frame index
+                    # add timestamp to datafile
+                    thisExp.timestampOnFlip(win, 'PressKey_to_Continue.stopped')
+                    PressKey_to_Continue.setAutoDraw(False)
+            
+            # *key_resp_2* updates
+            waitOnFlip = False
+            if key_resp_2.status == NOT_STARTED and tThisFlip >= 5-frameTolerance:
+                # keep track of start time/frame for later
+                key_resp_2.frameNStart = frameN  # exact frame index
+                key_resp_2.tStart = t  # local t and not account for scr refresh
+                key_resp_2.tStartRefresh = tThisFlipGlobal  # on global time
+                win.timeOnFlip(key_resp_2, 'tStartRefresh')  # time at next scr refresh
+                # add timestamp to datafile
+                thisExp.timestampOnFlip(win, 'key_resp_2.started')
+                key_resp_2.status = STARTED
+                # keyboard checking is just starting
+                waitOnFlip = True
+                win.callOnFlip(key_resp_2.clock.reset)  # t=0 on next screen flip
+                win.callOnFlip(key_resp_2.clearEvents, eventType='keyboard')  # clear events on next screen flip
+            if key_resp_2.status == STARTED:
+                # is it time to stop? (based on global clock, using actual start)
+                if tThisFlipGlobal > key_resp_2.tStartRefresh + 2-frameTolerance:
+                    # keep track of stop time/frame for later
+                    key_resp_2.tStop = t  # not accounting for scr refresh
+                    key_resp_2.frameNStop = frameN  # exact frame index
+                    # add timestamp to datafile
+                    thisExp.timestampOnFlip(win, 'key_resp_2.stopped')
+                    key_resp_2.status = FINISHED
+            if key_resp_2.status == STARTED and not waitOnFlip:
+                theseKeys = key_resp_2.getKeys(keyList=['return'], waitRelease=False)
+                _key_resp_2_allKeys.extend(theseKeys)
+                if len(_key_resp_2_allKeys):
+                    key_resp_2.keys = _key_resp_2_allKeys[0].name  # just the first key pressed
+                    key_resp_2.rt = _key_resp_2_allKeys[0].rt
+                    # a response ends the routine
+                    continueRoutine = False
+            
             # check for quit (typically the Esc key)
             if endExpNow or defaultKeyboard.getKeys(keyList=["escape"]):
                 core.quit()
@@ -1130,7 +1327,7 @@ for thisRepetition in Repetition:
                 routineForceEnded = True
                 break
             continueRoutine = False  # will revert to True if at least one component still running
-            for thisComponent in EndComponents:
+            for thisComponent in End_of_BlockComponents:
                 if hasattr(thisComponent, "status") and thisComponent.status != FINISHED:
                     continueRoutine = True
                     break  # at least one component has not yet finished
@@ -1139,23 +1336,99 @@ for thisRepetition in Repetition:
             if continueRoutine:  # don't flip if this routine is over or we'll get a blank screen
                 win.flip()
         
-        # --- Ending Routine "End" ---
-        for thisComponent in EndComponents:
+        # --- Ending Routine "End_of_Block" ---
+        for thisComponent in End_of_BlockComponents:
             if hasattr(thisComponent, "setAutoDraw"):
                 thisComponent.setAutoDraw(False)
+        # check responses
+        if key_resp_2.keys in ['', [], None]:  # No response was made
+            key_resp_2.keys = None
+        Blocks.addData('key_resp_2.keys',key_resp_2.keys)
+        if key_resp_2.keys != None:  # we had a response
+            Blocks.addData('key_resp_2.rt', key_resp_2.rt)
         # using non-slip timing so subtract the expected duration of this Routine (unless ended on request)
         if routineForceEnded:
             routineTimer.reset()
         else:
-            routineTimer.addTime(-3.000000)
+            routineTimer.addTime(-7.000000)
         thisExp.nextEntry()
         
     # completed blocks_per_repetition repeats of 'Blocks'
     
+    # get names of stimulus parameters
+    if Blocks.trialList in ([], [None], None):
+        params = []
+    else:
+        params = Blocks.trialList[0].keys()
+    # save data for this loop
+    Blocks.saveAsExcel(filename + '.xlsx', sheetName='Blocks',
+        stimOut=params,
+        dataOut=['n','all_mean','all_std', 'all_raw'])
     thisExp.nextEntry()
     
 # completed total_repetition repeats of 'Repetition'
 
+# get names of stimulus parameters
+if Repetition.trialList in ([], [None], None):
+    params = []
+else:
+    params = Repetition.trialList[0].keys()
+# save data for this loop
+Repetition.saveAsExcel(filename + '.xlsx', sheetName='Repetition',
+    stimOut=params,
+    dataOut=['n','all_mean','all_std', 'all_raw'])
+
+# --- Prepare to start Routine "End_of_Experiment" ---
+continueRoutine = True
+routineForceEnded = False
+# update component parameters for each repeat
+# keep track of which components have finished
+End_of_ExperimentComponents = []
+for thisComponent in End_of_ExperimentComponents:
+    thisComponent.tStart = None
+    thisComponent.tStop = None
+    thisComponent.tStartRefresh = None
+    thisComponent.tStopRefresh = None
+    if hasattr(thisComponent, 'status'):
+        thisComponent.status = NOT_STARTED
+# reset timers
+t = 0
+_timeToFirstFrame = win.getFutureFlipTime(clock="now")
+frameN = -1
+
+# --- Run Routine "End_of_Experiment" ---
+while continueRoutine:
+    # get current time
+    t = routineTimer.getTime()
+    tThisFlip = win.getFutureFlipTime(clock=routineTimer)
+    tThisFlipGlobal = win.getFutureFlipTime(clock=None)
+    frameN = frameN + 1  # number of completed frames (so 0 is the first frame)
+    # update/draw components on each frame
+    
+    # check for quit (typically the Esc key)
+    if endExpNow or defaultKeyboard.getKeys(keyList=["escape"]):
+        core.quit()
+    
+    # check if all components have finished
+    if not continueRoutine:  # a component has requested a forced-end of Routine
+        routineForceEnded = True
+        break
+    continueRoutine = False  # will revert to True if at least one component still running
+    for thisComponent in End_of_ExperimentComponents:
+        if hasattr(thisComponent, "status") and thisComponent.status != FINISHED:
+            continueRoutine = True
+            break  # at least one component has not yet finished
+    
+    # refresh the screen
+    if continueRoutine:  # don't flip if this routine is over or we'll get a blank screen
+        win.flip()
+
+# --- Ending Routine "End_of_Experiment" ---
+for thisComponent in End_of_ExperimentComponents:
+    if hasattr(thisComponent, "setAutoDraw"):
+        thisComponent.setAutoDraw(False)
+# the Routine "End_of_Experiment" was not non-slip safe, so reset the non-slip timer
+routineTimer.reset()
 
 # --- End experiment ---
 # Flip one final time so any remaining win.callOnFlip() 
@@ -1163,7 +1436,6 @@ for thisRepetition in Repetition:
 win.flip()
 
 # these shouldn't be strictly necessary (should auto-save)
-thisExp.saveAsWideText(filename+'.csv', delim='auto')
 thisExp.saveAsPickle(filename)
 logging.flush()
 # make sure everything is closed down
