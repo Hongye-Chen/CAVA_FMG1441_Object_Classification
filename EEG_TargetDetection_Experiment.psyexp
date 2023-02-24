@@ -15,12 +15,12 @@
     <Param val="testMonitor" valType="str" updates="None" name="Monitor"/>
     <Param val="[]" valType="list" updates="None" name="Resources"/>
     <Param val="False" valType="bool" updates="None" name="Save csv file"/>
-    <Param val="True" valType="bool" updates="None" name="Save excel file"/>
-    <Param val="False" valType="bool" updates="None" name="Save hdf5 file"/>
+    <Param val="False" valType="bool" updates="None" name="Save excel file"/>
+    <Param val="True" valType="bool" updates="None" name="Save hdf5 file"/>
     <Param val="True" valType="bool" updates="None" name="Save log file"/>
     <Param val="True" valType="bool" updates="None" name="Save psydat file"/>
-    <Param val="False" valType="bool" updates="None" name="Save wide csv file"/>
-    <Param val="2" valType="num" updates="None" name="Screen"/>
+    <Param val="True" valType="bool" updates="None" name="Save wide csv file"/>
+    <Param val="1" valType="num" updates="None" name="Screen"/>
     <Param val="True" valType="bool" updates="None" name="Show info dlg"/>
     <Param val="False" valType="bool" updates="None" name="Show mouse"/>
     <Param val="height" valType="str" updates="None" name="Units"/>
@@ -35,7 +35,7 @@
     <Param val="EYELINK 1000 DESKTOP" valType="str" updates="None" name="elModel"/>
     <Param val="CENTROID_FIT" valType="str" updates="None" name="elPupilAlgorithm"/>
     <Param val="PUPIL_DIAMETER" valType="str" updates="None" name="elPupilMeasure"/>
-    <Param val="1000" valType="num" updates="None" name="elSampleRate"/>
+    <Param val="500" valType="num" updates="None" name="elSampleRate"/>
     <Param val="False" valType="bool" updates="None" name="elSimMode"/>
     <Param val="RIGHT_EYE" valType="str" updates="None" name="elTrackEyes"/>
     <Param val="PUPIL_CR_TRACKING" valType="str" updates="None" name="elTrackingMode"/>
@@ -118,33 +118,52 @@
         <Param val="from exp settings" valType="str" updates="None" name="units"/>
         <Param val="" valType="list" updates="constant" name="vertices"/>
       </PolygonComponent>
-      <TextComponent name="text">
-        <Param val="white" valType="color" updates="constant" name="color"/>
+      <ParallelOutComponent name="last_p_port">
+        <Param val="0x4050" valType="str" updates="None" name="address"/>
+        <Param val="False" valType="bool" updates="None" name="disabled"/>
+        <Param val="" valType="code" updates="None" name="durationEstim"/>
+        <Param val="last_p_port" valType="code" updates="None" name="name"/>
+        <Param val="EIO" valType="str" updates="None" name="register"/>
+        <Param val="True" valType="bool" updates="None" name="saveStartStop"/>
+        <Param val="gray_trigger_index" valType="code" updates="None" name="startData"/>
+        <Param val="" valType="code" updates="None" name="startEstim"/>
+        <Param val="condition" valType="str" updates="None" name="startType"/>
+        <Param val="$blank_screen_last.status == STARTED" valType="code" updates="None" name="startVal"/>
+        <Param val="" valType="code" updates="None" name="stopData"/>
+        <Param val="duration (frames)" valType="str" updates="None" name="stopType"/>
+        <Param val="1" valType="code" updates="constant" name="stopVal"/>
+        <Param val="True" valType="bool" updates="constant" name="syncScreen"/>
+        <Param val="True" valType="bool" updates="None" name="syncScreenRefresh"/>
+      </ParallelOutComponent>
+      <ImageComponent name="response_image">
+        <Param val="center" valType="str" updates="constant" name="anchor"/>
+        <Param val="$[1,1,1]" valType="color" updates="constant" name="color"/>
         <Param val="rgb" valType="str" updates="constant" name="colorSpace"/>
         <Param val="1" valType="num" updates="constant" name="contrast"/>
         <Param val="False" valType="bool" updates="None" name="disabled"/>
         <Param val="" valType="code" updates="None" name="durationEstim"/>
-        <Param val="None" valType="str" updates="constant" name="flip"/>
-        <Param val="Open Sans" valType="str" updates="constant" name="font"/>
-        <Param val="LTR" valType="str" updates="None" name="languageStyle"/>
-        <Param val="0.05" valType="num" updates="constant" name="letterHeight"/>
-        <Param val="text" valType="code" updates="None" name="name"/>
+        <Param val="False" valType="bool" updates="constant" name="flipHoriz"/>
+        <Param val="False" valType="bool" updates="constant" name="flipVert"/>
+        <Param val="response.png" valType="file" updates="constant" name="image"/>
+        <Param val="linear" valType="str" updates="constant" name="interpolate"/>
+        <Param val="" valType="str" updates="constant" name="mask"/>
+        <Param val="response_image" valType="code" updates="None" name="name"/>
         <Param val="" valType="num" updates="constant" name="opacity"/>
         <Param val="0" valType="num" updates="constant" name="ori"/>
         <Param val="(0, 0)" valType="list" updates="constant" name="pos"/>
         <Param val="True" valType="bool" updates="None" name="saveStartStop"/>
+        <Param val="image_w, image_h" valType="list" updates="constant" name="size"/>
         <Param val="" valType="code" updates="None" name="startEstim"/>
-        <Param val="time (s)" valType="str" updates="None" name="startType"/>
-        <Param val="$len_blank_short" valType="code" updates="None" name="startVal"/>
+        <Param val="condition" valType="str" updates="None" name="startType"/>
+        <Param val="$blank_screen_last.status == FINISHED" valType="code" updates="None" name="startVal"/>
         <Param val="duration (s)" valType="str" updates="None" name="stopType"/>
         <Param val="3" valType="code" updates="constant" name="stopVal"/>
         <Param val="True" valType="bool" updates="None" name="syncScreenRefresh"/>
-        <Param val="Target?&amp;#10;&amp;#10;Yes? Press y&amp;#10;&amp;#10;No? Press n" valType="str" updates="constant" name="text"/>
-        <Param val="from exp settings" valType="str" updates="None" name="units"/>
-        <Param val="" valType="num" updates="constant" name="wrapWidth"/>
-      </TextComponent>
+        <Param val="128" valType="num" updates="constant" name="texture resolution"/>
+        <Param val="pix" valType="str" updates="None" name="units"/>
+      </ImageComponent>
       <KeyboardComponent name="key_resp">
-        <Param val="'y' ,'n'" valType="list" updates="constant" name="allowedKeys"/>
+        <Param val="'l', 'k'" valType="list" updates="constant" name="allowedKeys"/>
         <Param val="$cur_correct" valType="str" updates="constant" name="correctAns"/>
         <Param val="False" valType="bool" updates="None" name="disabled"/>
         <Param val="True" valType="bool" updates="constant" name="discard previous"/>
@@ -153,9 +172,9 @@
         <Param val="key_resp" valType="code" updates="None" name="name"/>
         <Param val="True" valType="bool" updates="None" name="saveStartStop"/>
         <Param val="" valType="code" updates="None" name="startEstim"/>
-        <Param val="time (s)" valType="str" updates="None" name="startType"/>
-        <Param val="$len_blank_short" valType="code" updates="None" name="startVal"/>
-        <Param val="duration (s)" valType="str" updates="None" name="stopType"/>
+        <Param val="condition" valType="str" updates="None" name="startType"/>
+        <Param val="$blank_screen_last.status == FINISHED" valType="code" updates="None" name="startVal"/>
+        <Param val="time (s)" valType="str" updates="None" name="stopType"/>
         <Param val="3" valType="code" updates="constant" name="stopVal"/>
         <Param val="first key" valType="str" updates="constant" name="store"/>
         <Param val="True" valType="bool" updates="constant" name="storeCorrect"/>
@@ -174,7 +193,7 @@
         <Param val="" valType="extendedCode" updates="constant" name="End Experiment"/>
         <Param val="" valType="extendedCode" updates="constant" name="End JS Experiment"/>
         <Param val="" valType="extendedCode" updates="constant" name="End JS Routine"/>
-        <Param val="if key_resp.corr:&amp;#10;    num_correct += 1        #Record how many times the participants reponse correctly&amp;#10;    trial_correct = &quot;CORRECT!&quot;&amp;#10;else:&amp;#10;    trial_correct = &quot;WRONG!&quot;" valType="extendedCode" updates="constant" name="End Routine"/>
+        <Param val="trial_correct = &quot;WRONG!&quot;&amp;#10;&amp;#10;if key_resp.corr:&amp;#10;    num_correct += 1        #Record how many times the participants reponse correctly&amp;#10;    trial_correct = &quot;CORRECT!&quot;&amp;#10;else:&amp;#10;    trial_correct = &quot;WRONG!&quot;" valType="extendedCode" updates="constant" name="End Routine"/>
         <Param val="False" valType="bool" updates="None" name="disabled"/>
         <Param val="Calculate_cor" valType="code" updates="None" name="name"/>
       </CodeComponent>
@@ -297,7 +316,7 @@
       <CodeComponent name="Initialization_code">
         <Param val="" valType="extendedCode" updates="constant" name="Before Experiment"/>
         <Param val="" valType="extendedCode" updates="constant" name="Before JS Experiment"/>
-        <Param val="import pandas as pd&amp;#10;&amp;#10;#Set the global file path&amp;#10;#files_path = r&quot;C:\Users\15202\OneDrive\C_\University of Amsterdam\Intern\\&quot;&amp;#10;#&amp;#10;files_path= os.path.join(&quot;D:\\&quot;, &quot;Users&quot;, &quot;Niklas&quot;, &quot;eeg_experiment-main&quot;)&amp;#10;#images_path = os.path.join(&quot;Y:\\&quot;, &quot;Projects&quot;, &quot;2023_Scholte_FMG1441&quot;, &quot;Stimuli&quot;)&amp;#10;&amp;#10;with open(os.path.join(files_path, &quot;Instruction.md&quot;), 'r') as instruction_file:     #Load the instruction markdown file&amp;#10;    instruction_text = instruction_file.read()          #save the text&amp;#10;&amp;#10;eeg_trial_num = 0   #Track with the current trial&amp;#10;cur_triger = 0&amp;#10;images_per_trial = 20&amp;#10;trials_per_block = 5&amp;#10;blocks_per_repetition = 2&amp;#10;total_repetition = 1&amp;#10;total_blocks = blocks_per_repetition * total_repetition&amp;#10;max_trial = trials_per_block * total_blocks #The maximum of trials&amp;#10;&amp;#10;orig_image_width = 5496&amp;#10;orig_image_height= 3672&amp;#10;image_w = win.size[0]           #Set the screen width as the width of images&amp;#10;aspect_ratio = orig_image_height/orig_image_width       #Set the aspect ratio of image&amp;#10;image_h = int(image_w * aspect_ratio)     #Set the height of images&amp;#10;&amp;#10;len_blank_long = 3          #The length of blank screen before showing any images &amp;#10;len_blank_short = 0.4       #The length of blank screen after every images&amp;#10;&amp;#10;#Get the list of all images' file name&amp;#10;#Images_name_list = os.listdir(images_path)&amp;#10;Images_name_list = os.listdir(os.path.join(files_path, &quot;Stimuli&quot;))&amp;#10;&amp;#10;# NOTICE: The Images from the list are not in numerical order, &amp;#10;# i.e. the third element is &quot;10.tiff&quot; but not &quot;2.tiff&quot;&amp;#10;# In the testing case (and also formal experiment), this would not cause any problem. &amp;#10;# However, if we need to use these indices to track with specific images, &amp;#10;# use the command below to sort the list&amp;#10;# (make sure the prefix of file name is number only).&amp;#10;&amp;#10;#sorted(Images_name_list, key = lambda item: int(item.split(&quot;.&quot;)[0]))" valType="extendedCode" updates="constant" name="Begin Experiment"/>
+        <Param val="import pandas as pd&amp;#10;&amp;#10;#Set the global file path&amp;#10;#files_path = r&quot;C:\Users\15202\OneDrive\C_\University of Amsterdam\Intern\\&quot;&amp;#10;#&amp;#10;files_path= os.path.join(&quot;D:\\&quot;, &quot;Users&quot;, &quot;Niklas&quot;, &quot;eeg_experiment-main&quot;)&amp;#10;#os.makedirs(os.path.join(files_path, expInfo['participant']), exist_ok=True)&amp;#10;#images_path = os.path.join(&quot;Y:\\&quot;, &quot;Projects&quot;, &quot;2023_Scholte_FMG1441&quot;, &quot;Stimuli&quot;)&amp;#10;#newFileName = os.path.join(&quot;Y:\\&quot;, &quot;Projects&quot;, &quot;2023_Scholte_FMG1441&quot;, &quot;Data&quot;) + u'data/%s_%s_%s' % (expInfo['participant'], expName, expInfo['date'])&amp;#10;&amp;#10;#_thisDir = os.path.dirname(os.path.abspath(r&quot;Y:\Projects\2023_Scholte_FMG1441\Data\pilot&quot;))&amp;#10;#filename = _thisDir + os.sep + u'data/%s_%s_%s' % (expInfo['participant'], expName, expInfo['date'])&amp;#10;#thisExp.dataFileName = filename&amp;#10;#logFile.dataFileName = filename&amp;#10;&amp;#10;with open(os.path.join(files_path, &quot;Instruction.md&quot;), 'r') as instruction_file:     #Load the instruction markdown file&amp;#10;    instruction_text = instruction_file.read()          #save the text&amp;#10;&amp;#10;eeg_trial_num = 0   #Track with the current trial&amp;#10;cur_triger = 0&amp;#10;images_per_trial = 20&amp;#10;trials_per_block = 5&amp;#10;blocks_per_repetition = 2&amp;#10;total_repetition = 1&amp;#10;total_blocks = blocks_per_repetition * total_repetition&amp;#10;max_trial = trials_per_block * total_blocks #The maximum of trials&amp;#10;&amp;#10;orig_image_width = 5496&amp;#10;orig_image_height= 3672&amp;#10;image_w = win.size[0]           #Set the screen width as the width of images&amp;#10;aspect_ratio = orig_image_height/orig_image_width       #Set the aspect ratio of image&amp;#10;image_h = int(image_w * aspect_ratio)     #Set the height of images&amp;#10;&amp;#10;len_blank_long = 3          #The length of blank screen before showing any images &amp;#10;len_blank_short = 0.3       #The length of blank screen after every images&amp;#10;&amp;#10;#Get the list of all images' file name&amp;#10;#Images_name_list = os.listdir(images_path)&amp;#10;Images_name_list = os.listdir(os.path.join(files_path, &quot;Stimuli&quot;))&amp;#10;&amp;#10;# NOTICE: The Images from the list are not in numerical order, &amp;#10;# i.e. the third element is &quot;10.tiff&quot; but not &quot;2.tiff&quot;&amp;#10;# In the testing case (and also formal experiment), this would not cause any problem. &amp;#10;# However, if we need to use these indices to track with specific images, &amp;#10;# use the command below to sort the list&amp;#10;# (make sure the prefix of file name is number only).&amp;#10;&amp;#10;#sorted(Images_name_list, key = lambda item: int(item.split(&quot;.&quot;)[0]))&amp;#10;&amp;#10;" valType="extendedCode" updates="constant" name="Begin Experiment"/>
         <Param val="" valType="extendedCode" updates="constant" name="Begin JS Experiment"/>
         <Param val="" valType="extendedCode" updates="constant" name="Begin JS Routine"/>
         <Param val="" valType="extendedCode" updates="constant" name="Begin Routine"/>
@@ -311,6 +330,19 @@
         <Param val="False" valType="bool" updates="None" name="disabled"/>
         <Param val="Initialization_code" valType="code" updates="None" name="name"/>
       </CodeComponent>
+      <EyetrackerRecordComponent name="etRecord_start">
+        <Param val="Start Only" valType="str" updates="None" name="actionType"/>
+        <Param val="False" valType="bool" updates="None" name="disabled"/>
+        <Param val="" valType="code" updates="None" name="durationEstim"/>
+        <Param val="etRecord_start" valType="code" updates="None" name="name"/>
+        <Param val="True" valType="bool" updates="None" name="saveStartStop"/>
+        <Param val="" valType="code" updates="None" name="startEstim"/>
+        <Param val="time (s)" valType="str" updates="None" name="startType"/>
+        <Param val="0.0" valType="code" updates="None" name="startVal"/>
+        <Param val="duration (s)" valType="str" updates="None" name="stopType"/>
+        <Param val="" valType="code" updates="constant" name="stopVal"/>
+        <Param val="False" valType="bool" updates="None" name="syncScreenRefresh"/>
+      </EyetrackerRecordComponent>
     </Routine>
     <Routine name="Correctness_Initialization">
       <CodeComponent name="Cor_initialization">
@@ -370,7 +402,7 @@
         <Param val="" valType="code" updates="None" name="startEstim"/>
         <Param val="condition" valType="str" updates="None" name="startType"/>
         <Param val="$blank_screen.status == STARTED" valType="code" updates="None" name="startVal"/>
-        <Param val="gray_trigger_index" valType="code" updates="None" name="stopData"/>
+        <Param val="" valType="code" updates="None" name="stopData"/>
         <Param val="duration (frames)" valType="str" updates="None" name="stopType"/>
         <Param val="1" valType="code" updates="constant" name="stopVal"/>
         <Param val="True" valType="bool" updates="constant" name="syncScreen"/>
@@ -427,7 +459,7 @@
         <Param val="" valType="code" updates="None" name="startEstim"/>
         <Param val="condition" valType="str" updates="None" name="startType"/>
         <Param val="$Images.status == STARTED" valType="code" updates="None" name="startVal"/>
-        <Param val="cur_triger" valType="code" updates="None" name="stopData"/>
+        <Param val="" valType="code" updates="None" name="stopData"/>
         <Param val="duration (frames)" valType="str" updates="None" name="stopType"/>
         <Param val="1" valType="code" updates="constant" name="stopVal"/>
         <Param val="True" valType="bool" updates="constant" name="syncScreen"/>
@@ -455,7 +487,7 @@
         <Param val="time (s)" valType="str" updates="None" name="startType"/>
         <Param val="0.0" valType="code" updates="None" name="startVal"/>
         <Param val="condition" valType="str" updates="None" name="stopType"/>
-        <Param val="$Image_trigger.status==FINISHED" valType="code" updates="constant" name="stopVal"/>
+        <Param val="$Images.status==FINISHED" valType="code" updates="constant" name="stopVal"/>
         <Param val="True" valType="bool" updates="None" name="syncScreenRefresh"/>
         <Param val="from exp settings" valType="str" updates="None" name="units"/>
         <Param val="" valType="list" updates="constant" name="vertices"/>
@@ -576,7 +608,6 @@
       <Param name="textColor" updates="None" val="auto" valType="color"/>
       <Param name="units" updates="None" val="from exp settings" valType="str"/>
     </EyetrackerValidationRoutine>
-    <Routine name="End_of_Experiment"/>
     <Routine name="End_of_Block">
       <CodeComponent name="block_end">
         <Param val="" valType="extendedCode" updates="constant" name="Before Experiment"/>
@@ -639,7 +670,7 @@
         <Param val="time (s)" valType="str" updates="None" name="startType"/>
         <Param val="3" valType="code" updates="None" name="startVal"/>
         <Param val="duration (s)" valType="str" updates="None" name="stopType"/>
-        <Param val="2" valType="code" updates="constant" name="stopVal"/>
+        <Param val="10" valType="code" updates="constant" name="stopVal"/>
         <Param val="True" valType="bool" updates="None" name="syncScreenRefresh"/>
         <Param val="Please take a rest for 10 seconds" valType="str" updates="constant" name="text"/>
         <Param val="from exp settings" valType="str" updates="None" name="units"/>
@@ -662,9 +693,9 @@
         <Param val="True" valType="bool" updates="None" name="saveStartStop"/>
         <Param val="" valType="code" updates="None" name="startEstim"/>
         <Param val="time (s)" valType="str" updates="None" name="startType"/>
-        <Param val="5" valType="code" updates="None" name="startVal"/>
-        <Param val="duration (s)" valType="str" updates="None" name="stopType"/>
-        <Param val="2" valType="code" updates="constant" name="stopVal"/>
+        <Param val="13" valType="code" updates="None" name="startVal"/>
+        <Param val="condition" valType="str" updates="None" name="stopType"/>
+        <Param val="" valType="code" updates="constant" name="stopVal"/>
         <Param val="True" valType="bool" updates="None" name="syncScreenRefresh"/>
         <Param val="Press ENTER to continue" valType="str" updates="constant" name="text"/>
         <Param val="from exp settings" valType="str" updates="None" name="units"/>
@@ -681,16 +712,33 @@
         <Param val="True" valType="bool" updates="None" name="saveStartStop"/>
         <Param val="" valType="code" updates="None" name="startEstim"/>
         <Param val="time (s)" valType="str" updates="None" name="startType"/>
-        <Param val="5" valType="code" updates="None" name="startVal"/>
-        <Param val="duration (s)" valType="str" updates="None" name="stopType"/>
-        <Param val="2" valType="code" updates="constant" name="stopVal"/>
+        <Param val="13" valType="code" updates="None" name="startVal"/>
+        <Param val="condition" valType="str" updates="None" name="stopType"/>
+        <Param val="" valType="code" updates="constant" name="stopVal"/>
         <Param val="first key" valType="str" updates="constant" name="store"/>
         <Param val="False" valType="bool" updates="constant" name="storeCorrect"/>
         <Param val="True" valType="bool" updates="constant" name="syncScreenRefresh"/>
       </KeyboardComponent>
     </Routine>
+    <Routine name="End_of_experiment">
+      <EyetrackerRecordComponent name="etRecord_end">
+        <Param val="Stop Only" valType="str" updates="None" name="actionType"/>
+        <Param val="False" valType="bool" updates="None" name="disabled"/>
+        <Param val="" valType="code" updates="None" name="durationEstim"/>
+        <Param val="etRecord_end" valType="code" updates="None" name="name"/>
+        <Param val="True" valType="bool" updates="None" name="saveStartStop"/>
+        <Param val="" valType="code" updates="None" name="startEstim"/>
+        <Param val="time (s)" valType="str" updates="None" name="startType"/>
+        <Param val="" valType="code" updates="None" name="startVal"/>
+        <Param val="duration (s)" valType="str" updates="None" name="stopType"/>
+        <Param val="1.0" valType="code" updates="constant" name="stopVal"/>
+        <Param val="False" valType="bool" updates="None" name="syncScreenRefresh"/>
+      </EyetrackerRecordComponent>
+    </Routine>
   </Routines>
   <Flow>
+    <EyetrackerCalibrationRoutine name="calibration"/>
+    <EyetrackerValidationRoutine name="validation"/>
     <Routine name="Initialization"/>
     <LoopInitiator loopType="TrialHandler" name="Repetition">
       <Param name="Selected rows" updates="None" val="" valType="str"/>
@@ -748,6 +796,6 @@
     <Routine name="End_of_Block"/>
     <LoopTerminator name="Blocks"/>
     <LoopTerminator name="Repetition"/>
-    <Routine name="End_of_Experiment"/>
+    <Routine name="End_of_experiment"/>
   </Flow>
 </PsychoPy2experiment>
