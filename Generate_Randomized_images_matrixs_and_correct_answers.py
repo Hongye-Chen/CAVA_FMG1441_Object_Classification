@@ -1,12 +1,13 @@
 import pandas as pd
 import os
 import random
+import yaml
 
 images_trial = 20
-trials_block = 28
+trials_block = 24
 total_blocks = 10
-image_repeat_high = 8
-image_repeat_low = 4
+image_repeat_high = 9
+image_repeat_low = 3
 # altha = 0.1666666666666667 #Percentage of images that gonna be repeated more
 unique_images = 1194
 target_images = 6
@@ -14,15 +15,15 @@ trial_matrix = []       #Initiate the whole matrix
 total_trials = trials_block * total_blocks
 files_path = os.path.join("C:\\", "Users", "15202", "OneDrive", "C_", "University of Amsterdam", "Intern")
 
-high_repeat_range = 199  # How many images need to be presented more (8 times)      #int(altha * unique_images)
-total_targets = 28  # int(target_images * (high_per * image_repeat_high + (1-high_per) * image_repeat_low))
+high_repeat_range = 199  # How many images need to be presented more (9 times)      #int(altha * unique_images)
+total_targets = 24  # int(target_images * (high_per * image_repeat_high + (1-high_per) * image_repeat_low))
 
 images_list = list(range(unique_images))     # The list of unique images
-random.shuffle(images_list)     # Shuffle the list, the first 199 images gonna be presented 8 times
+random.shuffle(images_list)     # Shuffle the list, the first 199 images gonna be presented 9 times
 
 images_rep_list = [image_repeat_low] * unique_images   # A list to track how many times remaining for each image to be presented, 4 times for most of the images
 for i in range(high_repeat_range):
-    images_rep_list[images_list[i]] = image_repeat_high   # The first 199 images gonna be presented 8 times
+    images_rep_list[images_list[i]] = image_repeat_high   # The first 199 images gonna be presented 9 times
 images_rep_list = images_rep_list + [1] * total_targets   # Each target image only present 1 time
 
 for i in range(total_trials):      # Start Randomly assigning images for each trial
@@ -72,7 +73,7 @@ for i in trial_matrix:      #Double check if there are repeated images in each t
 print("No repeated images in each trial: ", no_repeat)
 
 
-images_population = [0] * (unique_images + total_targets)   #Check the images population, it should be 1,4,8
+images_population = [0] * (unique_images + total_targets)   #Check the images population, it should be 1,3,9
 for i in range(unique_images + total_targets):
     for j in trial_matrix:
         if i in j:
@@ -80,6 +81,10 @@ for i in range(unique_images + total_targets):
 
 print("Images population:", set(images_population))
 
+# yaml_path = os.path.join(files_path, "stimulus_filenames.yml")
+# with open(yaml_path, 'rb') as f:
+#     subjects = yaml.load(f, Loader=yaml.UnsafeLoader)
+# current_subject = subjects["sub_0"]
 randomized_matrix_dataframe = pd.DataFrame(trial_matrix)
 randomized_matrix_dataframe.to_csv(os.path.join(files_path, "randomized_matrix_1200.csv"), index=False, header = None)
 
