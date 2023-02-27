@@ -81,13 +81,6 @@ for i in range(unique_images + total_targets):
 
 print("Images population:", set(images_population))
 
-# yaml_path = os.path.join(files_path, "stimulus_filenames.yml")
-# with open(yaml_path, 'rb') as f:
-#     subjects = yaml.load(f, Loader=yaml.UnsafeLoader)
-# current_subject = subjects["sub_0"]
-randomized_matrix_dataframe = pd.DataFrame(trial_matrix)
-randomized_matrix_dataframe.to_csv(os.path.join(files_path, "randomized_matrix_975.csv"), index=False, header = None)
-
 correct_answer = []
 for i in trial_matrix:
     for j in range(images_trial):        #number of images per trial
@@ -101,6 +94,23 @@ for i in trial_matrix:
 correct_answer_data = {'correct_answers' : correct_answer}      #save the dataframe to a csv file
 correct_answer_dataframe = pd.DataFrame(correct_answer_data)
 correct_answer_dataframe.to_csv(os.path.join(files_path, "Correct_answers_975.csv"),index=False, header = None)
+
+yaml_path = os.path.join(files_path, "eeg_oads_stimulus_filenames.yml")
+with open(yaml_path, 'rb') as f:
+    subjects = yaml.load(f, Loader=yaml.UnsafeLoader)
+current_subject = subjects["sub_0"]
+for i in range(total_trials):
+    for j in range(images_trial):
+        if trial_matrix[i][j] > unique_images:
+            trial_matrix[i][j] = random.choice(current_subject[unique_images: unique_images+target_images])
+        else:
+            trial_matrix[i][j] = current_subject[trial_matrix[i][j]]
+
+
+randomized_matrix_dataframe = pd.DataFrame(trial_matrix)
+randomized_matrix_dataframe.to_csv(os.path.join(files_path, "randomized_matrix_975.csv"), index=False, header = None)
+
+
 
 
 
