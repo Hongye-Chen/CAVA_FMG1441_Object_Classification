@@ -6,24 +6,24 @@ import yaml
 images_trial = 20
 trials_block = 24
 total_blocks = 10
-image_repeat_high = 9
-image_repeat_low = 3
-# altha = 0.1666666666666667 #Percentage of images that gonna be repeated more
-unique_images = 1194
-target_images = 6
+image_repeat_high = 8
+image_repeat_low = 4
+# altha = 0.2 #Percentage of images that gonna be repeated more
+unique_images = 975
+target_images = 25
 trial_matrix = []       #Initiate the whole matrix
 total_trials = trials_block * total_blocks
 files_path = os.path.join("C:\\", "Users", "15202", "OneDrive", "C_", "University of Amsterdam", "Intern")
 
-high_repeat_range = 199  # How many images need to be presented more (9 times)      #int(altha * unique_images)
-total_targets = 24  # int(target_images * (high_per * image_repeat_high + (1-high_per) * image_repeat_low))
+high_repeat_range = 195  # How many images need to be presented more (9 times)      #int(altha * unique_images)
+total_targets = 120  # int(target_images * (high_per * image_repeat_high + (1-high_per) * image_repeat_low))
 
 images_list = list(range(unique_images))     # The list of unique images
 random.shuffle(images_list)     # Shuffle the list, the first 199 images gonna be presented 9 times
 
 images_rep_list = [image_repeat_low] * unique_images   # A list to track how many times remaining for each image to be presented, 4 times for most of the images
 for i in range(high_repeat_range):
-    images_rep_list[images_list[i]] = image_repeat_high   # The first 199 images gonna be presented 9 times
+    images_rep_list[images_list[i]] = image_repeat_high   # The first 195 images gonna be presented 8 times
 images_rep_list = images_rep_list + [1] * total_targets   # Each target image only present 1 time
 
 for i in range(total_trials):      # Start Randomly assigning images for each trial
@@ -73,7 +73,7 @@ for i in trial_matrix:      #Double check if there are repeated images in each t
 print("No repeated images in each trial: ", no_repeat)
 
 
-images_population = [0] * (unique_images + total_targets)   #Check the images population, it should be 1,3,9
+images_population = [0] * (unique_images + total_targets)   #Check the images population, it should be 1,4,8
 for i in range(unique_images + total_targets):
     for j in trial_matrix:
         if i in j:
@@ -86,12 +86,12 @@ print("Images population:", set(images_population))
 #     subjects = yaml.load(f, Loader=yaml.UnsafeLoader)
 # current_subject = subjects["sub_0"]
 randomized_matrix_dataframe = pd.DataFrame(trial_matrix)
-randomized_matrix_dataframe.to_csv(os.path.join(files_path, "randomized_matrix_1200.csv"), index=False, header = None)
+randomized_matrix_dataframe.to_csv(os.path.join(files_path, "randomized_matrix_975.csv"), index=False, header = None)
 
 correct_answer = []
 for i in trial_matrix:
     for j in range(images_trial):        #number of images per trial
-        if i[j] > unique_images-1:          #In our case, if the number is bigger than 1194, it's a target, assign 'k'
+        if i[j] > unique_images-1:          #In our case, if the number is bigger than 975, it's a target, assign 'k'
             correct_answer.append('k')
             break
         elif j==(images_trial-1):             #If the last image is still not a target, assign 'l'
@@ -100,7 +100,7 @@ for i in trial_matrix:
 
 correct_answer_data = {'correct_answers' : correct_answer}      #save the dataframe to a csv file
 correct_answer_dataframe = pd.DataFrame(correct_answer_data)
-correct_answer_dataframe.to_csv(os.path.join(files_path, "Correct_answers_1200.csv"),index=False, header = None)
+correct_answer_dataframe.to_csv(os.path.join(files_path, "Correct_answers_975.csv"),index=False, header = None)
 
 
 
