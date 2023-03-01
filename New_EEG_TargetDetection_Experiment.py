@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 """
 This experiment was created using PsychoPy3 Experiment Builder (v2022.2.5),
-    on maart 01, 2023, at 20:25
+    on maart 01, 2023, at 20:38
 If you publish work using this script the most relevant publication is:
 
     Peirce J, Gray JR, Simpson S, MacAskill M, Höchenberger R, Sogo H, Kastman E, Lindeløv JK. (2019) 
@@ -126,6 +126,9 @@ from copy import deepcopy
 #files_path = r"C:\Users\15202\OneDrive\C_\University of Amsterdam\Intern\\"
 #
 files_path= os.path.join("D:\\", "Users", "Niklas", "eeg_experiment-main")
+matrix_name = expInfo['participant'] + "_randomized_matrix_975.csv"
+save_to_data = pd.read_csv(os.path.join(files_path, "Subject_matrix", matrix_name), header = None)
+save_to_data.to_csv(os.path.join(files_path, "data", expInfo['date']+"_"+matrix_name),index=False, header = None)
 #os.makedirs(os.path.join(files_path, expInfo['participant']), exist_ok=True)
 #images_path = os.path.join("Y:\\", "Projects", "2023_Scholte_FMG1441", "Stimuli")
 #newFileName = os.path.join("Y:\\", "Projects", "2023_Scholte_FMG1441", "Data") + u'data/%s_%s_%s' % (expInfo['participant'], expName, expInfo['date'])
@@ -314,51 +317,6 @@ text = visual.TextStim(win=win, name='text',
 # Create some handy timers
 globalClock = core.Clock()  # to track the time since experiment started
 routineTimer = core.Clock()  # to track time remaining of each (possibly non-slip) routine 
-# define target for calibration
-calibrationTarget = visual.TargetStim(win, 
-    name='calibrationTarget',
-    radius=0.01, fillColor='', borderColor='black', lineWidth=2.0,
-    innerRadius=0.0035, innerFillColor='red', innerBorderColor='black', innerLineWidth=2.0,
-    colorSpace='rgb', units=None
-)
-# define parameters for calibration
-calibration = hardware.eyetracker.EyetrackerCalibration(win, 
-    eyetracker, calibrationTarget,
-    units=None, colorSpace='rgb',
-    progressMode='time', targetDur=1.5, expandScale=1.5,
-    targetLayout='FIVE_POINTS', randomisePos=True, textColor='white',
-    movementAnimation=True, targetDelay=1.0
-)
-# run calibration
-calibration.run()
-# clear any keypresses from during calibration so they don't interfere with the experiment
-defaultKeyboard.clearEvents()
-# the Routine "calibration" was not non-slip safe, so reset the non-slip timer
-routineTimer.reset()
-# define target for validation
-validationTarget = visual.TargetStim(win, 
-    name='validationTarget',
-    radius=0.01, fillColor='', borderColor='black', lineWidth=2.0,
-    innerRadius=0.0035, innerFillColor='red', innerBorderColor='black', innerLineWidth=2.0,
-    colorSpace='rgb', units=None
-)
-# define parameters for validation
-validation = iohub.ValidationProcedure(win,
-    target=validationTarget,
-    gaze_cursor='red', 
-    positions='FIVE_POINTS', randomize_positions=True,
-    expand_scale=1.5, target_duration=1.5,
-    enable_position_animation=True, target_delay=1.0,
-    progress_on_key=None, text_color='auto',
-    show_results_screen=True, save_results_screen=False,
-    color_space='rgb', unit_type=None
-)
-# run validation
-validation.run()
-# clear any keypresses from during validation so they don't interfere with the experiment
-defaultKeyboard.clearEvents()
-# the Routine "validation" was not non-slip safe, so reset the non-slip timer
-routineTimer.reset()
 
 # --- Prepare to start Routine "Initialization" ---
 continueRoutine = True
@@ -599,7 +557,6 @@ for thisBlock in Blocks:
         #each element should contain a image number,
         #The code below loads the corresponding row of trial from the matrix,
         #please change the path below
-        matrix_name = expInfo['participant'] + "_randomized_matrix_975.csv"
         cur_sequence = pd.read_csv(os.path.join(files_path, "Subject_matrix", matrix_name), header = None, skiprows = list(range(0,eeg_trial_num)) + list(range(eeg_trial_num+1,max_trial)) )
         cur_sequence_images = cur_sequence.iloc[0]   #Use the indexs to get the images' name
         #cur_sequence_images = [ os.path.join(images_path, i) for i in cur_sequence_images]
