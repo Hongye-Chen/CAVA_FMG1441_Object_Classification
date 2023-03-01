@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 """
 This experiment was created using PsychoPy3 Experiment Builder (v2022.2.5),
-    on maart 01, 2023, at 19:55
+    on maart 01, 2023, at 20:25
 If you publish work using this script the most relevant publication is:
 
     Peirce J, Gray JR, Simpson S, MacAskill M, Höchenberger R, Sogo H, Kastman E, Lindeløv JK. (2019) 
@@ -147,14 +147,14 @@ total_repetition = 1
 total_blocks = blocks_per_repetition * total_repetition
 max_trial = trials_per_block * total_blocks #The maximum of trials
 
-orig_image_width = 5496
-orig_image_height= 3672
+orig_image_width = 2155
+orig_image_height= 1440
 image_h = win.size[1]           #Set the screen width as the width of images
 aspect_ratio = orig_image_width/orig_image_height       #Set the aspect ratio of image
 image_w = int(image_h * aspect_ratio)     #Set the height of images
 
-len_blank_long = 3          #The length of blank screen before showing any images 
-len_blank_short = 0.3       #The length of blank screen after every images
+#len_blank_long = 3          #The length of blank screen before showing any images 
+#len_blank_short = 0.3       #The length of blank screen after every images
 
 #Get the list of all images' file name
 #Images_name_list = os.listdir(images_path)
@@ -171,6 +171,7 @@ Images_name_list = os.listdir(os.path.join(files_path, "Stimuli"))
 
 #sorted(Images_name_list, key = lambda item: int(item.split(".")[0]))
 
+num_correct = 0     #initialize the number of correct answers
 
 etRecord_start = hardware.eyetracker.EyetrackerControl(
     tracker=eyetracker,
@@ -193,8 +194,6 @@ Instruction_content = visual.TextStim(win=win, name='Instruction_content',
     languageStyle='LTR',
     depth=-1.0);
 Instruction_response = keyboard.Keyboard()
-
-# --- Initialize components for Routine "Correctness_Initialization" ---
 
 # --- Initialize components for Routine "Load_current_trial_info" ---
 Long_gray_screen = visual.Rect(
@@ -291,7 +290,7 @@ Rest = visual.TextStim(win=win, name='Rest',
     languageStyle='LTR',
     depth=-2.0);
 PressKey_to_Continue = visual.TextStim(win=win, name='PressKey_to_Continue',
-    text='Press SPACE to continue',
+    text='Please take a rest for at leat 10 seconds\n\n\nPress SPACE to continue',
     font='Open Sans',
     pos=(0, 0), height=0.05, wrapWidth=None, ori=0.0, 
     color='white', colorSpace='rgb', opacity=None, 
@@ -304,6 +303,13 @@ etRecord_end = hardware.eyetracker.EyetrackerControl(
     tracker=eyetracker,
     actionType='Stop Only'
 )
+text = visual.TextStim(win=win, name='text',
+    text='This is the end of experiment\n\nThank you so much for participating!',
+    font='Open Sans',
+    pos=(0, 0), height=0.05, wrapWidth=None, ori=0.0, 
+    color='white', colorSpace='rgb', opacity=None, 
+    languageStyle='LTR',
+    depth=-1.0);
 
 # Create some handy timers
 globalClock = core.Clock()  # to track the time since experiment started
@@ -312,7 +318,7 @@ routineTimer = core.Clock()  # to track time remaining of each (possibly non-sli
 calibrationTarget = visual.TargetStim(win, 
     name='calibrationTarget',
     radius=0.01, fillColor='', borderColor='black', lineWidth=2.0,
-    innerRadius=0.0035, innerFillColor='green', innerBorderColor='black', innerLineWidth=2.0,
+    innerRadius=0.0035, innerFillColor='red', innerBorderColor='black', innerLineWidth=2.0,
     colorSpace='rgb', units=None
 )
 # define parameters for calibration
@@ -333,13 +339,13 @@ routineTimer.reset()
 validationTarget = visual.TargetStim(win, 
     name='validationTarget',
     radius=0.01, fillColor='', borderColor='black', lineWidth=2.0,
-    innerRadius=0.0035, innerFillColor='green', innerBorderColor='black', innerLineWidth=2.0,
+    innerRadius=0.0035, innerFillColor='red', innerBorderColor='black', innerLineWidth=2.0,
     colorSpace='rgb', units=None
 )
 # define parameters for validation
 validation = iohub.ValidationProcedure(win,
     target=validationTarget,
-    gaze_cursor='green', 
+    gaze_cursor='red', 
     positions='FIVE_POINTS', randomize_positions=True,
     expand_scale=1.5, target_duration=1.5,
     enable_position_animation=True, target_delay=1.0,
@@ -563,61 +569,6 @@ for thisBlock in Blocks:
     if thisBlock != None:
         for paramName in thisBlock:
             exec('{} = thisBlock[paramName]'.format(paramName))
-    
-    # --- Prepare to start Routine "Correctness_Initialization" ---
-    continueRoutine = True
-    routineForceEnded = False
-    # update component parameters for each repeat
-    # Run 'Begin Routine' code from Cor_initialization
-    num_correct = 0     #For every block, initialize the number of correct answers
-    
-    # keep track of which components have finished
-    Correctness_InitializationComponents = []
-    for thisComponent in Correctness_InitializationComponents:
-        thisComponent.tStart = None
-        thisComponent.tStop = None
-        thisComponent.tStartRefresh = None
-        thisComponent.tStopRefresh = None
-        if hasattr(thisComponent, 'status'):
-            thisComponent.status = NOT_STARTED
-    # reset timers
-    t = 0
-    _timeToFirstFrame = win.getFutureFlipTime(clock="now")
-    frameN = -1
-    
-    # --- Run Routine "Correctness_Initialization" ---
-    while continueRoutine:
-        # get current time
-        t = routineTimer.getTime()
-        tThisFlip = win.getFutureFlipTime(clock=routineTimer)
-        tThisFlipGlobal = win.getFutureFlipTime(clock=None)
-        frameN = frameN + 1  # number of completed frames (so 0 is the first frame)
-        # update/draw components on each frame
-        
-        # check for quit (typically the Esc key)
-        if endExpNow or defaultKeyboard.getKeys(keyList=["escape"]):
-            core.quit()
-        
-        # check if all components have finished
-        if not continueRoutine:  # a component has requested a forced-end of Routine
-            routineForceEnded = True
-            break
-        continueRoutine = False  # will revert to True if at least one component still running
-        for thisComponent in Correctness_InitializationComponents:
-            if hasattr(thisComponent, "status") and thisComponent.status != FINISHED:
-                continueRoutine = True
-                break  # at least one component has not yet finished
-        
-        # refresh the screen
-        if continueRoutine:  # don't flip if this routine is over or we'll get a blank screen
-            win.flip()
-    
-    # --- Ending Routine "Correctness_Initialization" ---
-    for thisComponent in Correctness_InitializationComponents:
-        if hasattr(thisComponent, "setAutoDraw"):
-            thisComponent.setAutoDraw(False)
-    # the Routine "Correctness_Initialization" was not non-slip safe, so reset the non-slip timer
-    routineTimer.reset()
     
     # set up handler to look after randomisation of conditions etc
     Trials = data.TrialHandler(nReps=trials_per_block, method='sequential', 
@@ -1331,6 +1282,9 @@ for thisBlock in Blocks:
     # Run 'Begin Routine' code from block_end
     cur_block = int(eeg_trial_num / trials_per_block)
     block_end_text = "This is the end of block " + str(cur_block)
+    
+    num_correct = 0     #initialize the number of correct answers
+    
     text_4.setText(block_end_text)
     key_resp_2.keys = []
     key_resp_2.rt = []
@@ -1473,7 +1427,7 @@ continueRoutine = True
 routineForceEnded = False
 # update component parameters for each repeat
 # keep track of which components have finished
-End_of_experimentComponents = [etRecord_end]
+End_of_experimentComponents = [etRecord_end, text]
 for thisComponent in End_of_experimentComponents:
     thisComponent.tStart = None
     thisComponent.tStop = None
@@ -1513,6 +1467,26 @@ while continueRoutine:
             # add timestamp to datafile
             thisExp.addData('etRecord_end.stopped', t)
             etRecord_end.status = FINISHED
+    
+    # *text* updates
+    if text.status == NOT_STARTED and tThisFlip >= 0.0-frameTolerance:
+        # keep track of start time/frame for later
+        text.frameNStart = frameN  # exact frame index
+        text.tStart = t  # local t and not account for scr refresh
+        text.tStartRefresh = tThisFlipGlobal  # on global time
+        win.timeOnFlip(text, 'tStartRefresh')  # time at next scr refresh
+        # add timestamp to datafile
+        thisExp.timestampOnFlip(win, 'text.started')
+        text.setAutoDraw(True)
+    if text.status == STARTED:
+        # is it time to stop? (based on global clock, using actual start)
+        if tThisFlipGlobal > text.tStartRefresh + 3-frameTolerance:
+            # keep track of stop time/frame for later
+            text.tStop = t  # not accounting for scr refresh
+            text.frameNStop = frameN  # exact frame index
+            # add timestamp to datafile
+            thisExp.timestampOnFlip(win, 'text.stopped')
+            text.setAutoDraw(False)
     
     # check for quit (typically the Esc key)
     if endExpNow or defaultKeyboard.getKeys(keyList=["escape"]):
