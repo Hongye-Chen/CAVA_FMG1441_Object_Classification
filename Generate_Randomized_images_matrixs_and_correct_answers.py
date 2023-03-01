@@ -2,10 +2,12 @@ import pandas as pd
 import os
 import random
 import yaml
+from copy import deepcopy
+import numpy as np
 
 images_trial = 20
-trials_block = 24
-total_blocks = 10
+trials_block = 30
+total_blocks = 8
 image_repeat_high = 8
 image_repeat_low = 4
 # altha = 0.2 #Percentage of images that gonna be repeated more
@@ -82,14 +84,54 @@ for i in range(unique_images + total_targets):
 print("Images population:", set(images_population))
 
 correct_answer = []
-for i in trial_matrix:
+target_num = 0
+for i in range(total_trials):
     for j in range(images_trial):        #number of images per trial
-        if i[j] > unique_images-1:          #In our case, if the number is bigger than 975, it's a target, assign 'k'
+        if trial_matrix[i][j] > unique_images-1:          #In our case, if the number is bigger than 975, it's a target, assign 'k'
             correct_answer.append('k')
+            target_num += 1
+            if j < int(images_trial/2):
+                image_to_switch = trial_matrix[i][j]
+                new_j = random.randint(int(images_trial*0.75-1) ,images_trial-1)
+                trial_matrix[i][j] = trial_matrix[i][new_j]
+                trial_matrix[i][new_j] = image_to_switch
             break
         elif j==(images_trial-1):             #If the last image is still not a target, assign 'l'
             correct_answer.append('l')
             break
+
+
+
+no_repeat = True
+for i in trial_matrix:      #Double check if there are repeated images in each trial
+    no_repeat = no_repeat and (len(i) == len(set(i)))
+    if not no_repeat:
+        break
+
+print("No repeated images in each trial: ", no_repeat)
+
+
+images_population = [0] * (unique_images + total_targets)   #Check the images population, it should be 1,4,8
+for i in range(unique_images + total_targets):
+    for j in trial_matrix:
+        if i in j:
+            images_population[i] += 1
+
+print("Images population:", set(images_population))
+
+
+target_num = 0
+k = []
+for i in range(total_trials):
+    for j in range(images_trial):        #number of images per trial
+        if trial_matrix[i][j] > unique_images-1:          #In our case, if the number is bigger than 975, it's a target, assign 'k'
+            target_num += 1
+            break
+    if (i+1) % 30 == 0:
+        k.append(target_num)
+        target_num = 0
+
+
 
 correct_answer_data = {'correct_answers' : correct_answer}      #save the dataframe to a csv file
 correct_answer_dataframe = pd.DataFrame(correct_answer_data)
@@ -98,20 +140,27 @@ correct_answer_dataframe.to_csv(os.path.join(files_path, "Correct_answers_975.cs
 yaml_path = os.path.join(files_path, "eeg_oads_stimulus_filenames.yml")
 with open(yaml_path, 'rb') as f:
     subjects = yaml.load(f, Loader=yaml.UnsafeLoader)
-current_subject = subjects["sub_0"]
-for i in range(total_trials):
-    for j in range(images_trial):
-        if trial_matrix[i][j] > unique_images:
-            trial_matrix[i][j] = random.choice(current_subject[unique_images: unique_images+target_images])
-        else:
-            trial_matrix[i][j] = current_subject[trial_matrix[i][j]]
+
+for current_subject in subjects.keys():
+    file_name = current_subject + "_randomized_matrix_975.csv"
+    subject_images_list = subjects[current_subject]
+    file_matrix = deepcopy(trial_matrix)
+    for i in range(total_trials):
+        for j in range(images_trial):
+            if trial_matrix[i][j] > unique_images:
+                # a = 1
+                file_matrix[i][j] = random.choice(subject_images_list[unique_images: unique_images+target_images])
+            else:
+                # a = 50
+                file_matrix[i][j] = subject_images_list[trial_matrix[i][j]]
+    randomized_matrix_dataframe = pd.DataFrame(file_matrix)
+    randomized_matrix_dataframe.to_csv(os.path.join(files_path, file_name), index=False, header = None)
 
 
-randomized_matrix_dataframe = pd.DataFrame(trial_matrix)
-randomized_matrix_dataframe.to_csv(os.path.join(files_path, "randomized_matrix_975.csv"), index=False, header = None)
 
-
-
+# current_matrix = pd.read_csv(os.path.join(files_path, "Randomized matrix.csv"), header = None,)
+# # filename = expinfo['participant'] + "_Randomized matrix.csv"
+# current_matrix.to_csv(os.path.join(files_path, filename),index=False, header = None)
 
 
 
