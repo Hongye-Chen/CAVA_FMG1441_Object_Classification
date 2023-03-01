@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 """
 This experiment was created using PsychoPy3 Experiment Builder (v2022.2.5),
-    on maart 01, 2023, at 18:26
+    on maart 01, 2023, at 19:55
 If you publish work using this script the most relevant publication is:
 
     Peirce J, Gray JR, Simpson S, MacAskill M, Höchenberger R, Sogo H, Kastman E, Lindeløv JK. (2019) 
@@ -308,6 +308,51 @@ etRecord_end = hardware.eyetracker.EyetrackerControl(
 # Create some handy timers
 globalClock = core.Clock()  # to track the time since experiment started
 routineTimer = core.Clock()  # to track time remaining of each (possibly non-slip) routine 
+# define target for calibration
+calibrationTarget = visual.TargetStim(win, 
+    name='calibrationTarget',
+    radius=0.01, fillColor='', borderColor='black', lineWidth=2.0,
+    innerRadius=0.0035, innerFillColor='green', innerBorderColor='black', innerLineWidth=2.0,
+    colorSpace='rgb', units=None
+)
+# define parameters for calibration
+calibration = hardware.eyetracker.EyetrackerCalibration(win, 
+    eyetracker, calibrationTarget,
+    units=None, colorSpace='rgb',
+    progressMode='time', targetDur=1.5, expandScale=1.5,
+    targetLayout='FIVE_POINTS', randomisePos=True, textColor='white',
+    movementAnimation=True, targetDelay=1.0
+)
+# run calibration
+calibration.run()
+# clear any keypresses from during calibration so they don't interfere with the experiment
+defaultKeyboard.clearEvents()
+# the Routine "calibration" was not non-slip safe, so reset the non-slip timer
+routineTimer.reset()
+# define target for validation
+validationTarget = visual.TargetStim(win, 
+    name='validationTarget',
+    radius=0.01, fillColor='', borderColor='black', lineWidth=2.0,
+    innerRadius=0.0035, innerFillColor='green', innerBorderColor='black', innerLineWidth=2.0,
+    colorSpace='rgb', units=None
+)
+# define parameters for validation
+validation = iohub.ValidationProcedure(win,
+    target=validationTarget,
+    gaze_cursor='green', 
+    positions='FIVE_POINTS', randomize_positions=True,
+    expand_scale=1.5, target_duration=1.5,
+    enable_position_animation=True, target_delay=1.0,
+    progress_on_key=None, text_color='auto',
+    show_results_screen=True, save_results_screen=False,
+    color_space='rgb', unit_type=None
+)
+# run validation
+validation.run()
+# clear any keypresses from during validation so they don't interfere with the experiment
+defaultKeyboard.clearEvents()
+# the Routine "validation" was not non-slip safe, so reset the non-slip timer
+routineTimer.reset()
 
 # --- Prepare to start Routine "Initialization" ---
 continueRoutine = True

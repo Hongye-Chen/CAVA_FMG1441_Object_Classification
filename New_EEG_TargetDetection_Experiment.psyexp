@@ -793,6 +793,8 @@
     </Routine>
   </Routines>
   <Flow>
+    <EyetrackerCalibrationRoutine name="calibration"/>
+    <EyetrackerValidationRoutine name="validation"/>
     <Routine name="Initialization"/>
     <Routine name="Introduction"/>
     <LoopInitiator loopType="TrialHandler" name="Blocks">
