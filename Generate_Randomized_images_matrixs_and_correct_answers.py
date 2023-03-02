@@ -15,12 +15,14 @@ unique_images = 975
 target_images = 25
 trial_matrix = []       #Initiate the whole matrix
 total_trials = trials_block * total_blocks
-files_path = os.path.join("C:\\", "Users", "15202", "OneDrive", "C_", "University of Amsterdam", "Intern")
+file_path = r"C:\Users\15202\OneDrive\C_\University of Amsterdam\Intern"
+file_path = os.path.normpath(file_path)
 
-high_repeat_range = 195  # How many images need to be presented more (9 times)      #int(altha * unique_images)
+high_repeat_range = 195  # How many images need to be presented more (8 times)      #int(altha * unique_images)
 total_targets = 120  # int(target_images * (high_per * image_repeat_high + (1-high_per) * image_repeat_low))
-
+#
 images_list = list(range(unique_images))     # The list of unique images
+# random.seed(0)
 random.shuffle(images_list)     # Shuffle the list, the first 199 images gonna be presented 9 times
 
 images_rep_list = [image_repeat_low] * unique_images   # A list to track how many times remaining for each image to be presented, 4 times for most of the images
@@ -100,7 +102,20 @@ for i in range(total_trials):
             correct_answer.append('l')
             break
 
+np.random.shuffle(trial_matrix)
 
+
+# trial_matrix = pd.read_csv(os.path.join(files_path, "Randomized_Matrix_975_NumberIndex.csv"), header = None)
+
+correct_answer = []
+for i in range(total_trials):
+    for j in range(images_trial):        #number of images per trial
+        if trial_matrix[i][j] > unique_images-1:          #In our case, if the number is bigger than 975, it's a target, assign 'k'
+            correct_answer.append('k')
+            break
+        elif j==(images_trial-1):             #If the last image is still not a target, assign 'l'
+            correct_answer.append('l')
+            break
 
 no_repeat = True
 for i in trial_matrix:      #Double check if there are repeated images in each trial
@@ -130,14 +145,19 @@ for i in range(total_trials):
     if (i+1) % 30 == 0:
         k.append(target_num)
         target_num = 0
+print(k)
 
+p = []
+for i in trial_matrix:
+    p.append([ind for ind, val in enumerate(i) if val >= unique_images])
+print(p)
 
 
 correct_answer_data = {'correct_answers' : correct_answer}      #save the dataframe to a csv file
 correct_answer_dataframe = pd.DataFrame(correct_answer_data)
-correct_answer_dataframe.to_csv(os.path.join(files_path, "Correct_answers_975.csv"),index=False, header = None)
-
-yaml_path = os.path.join(files_path, "eeg_oads_stimulus_filenames.yml")
+correct_answer_dataframe.to_csv(os.path.join(file_path, "Correct_answers_975.csv"),index=False, header = None)
+#
+yaml_path = os.path.join(file_path, "eeg_oads_stimulus_filenames.yml")
 with open(yaml_path, 'rb') as f:
     subjects = yaml.load(f, Loader=yaml.UnsafeLoader)
 
@@ -154,13 +174,11 @@ for current_subject in subjects.keys():
                 # a = 50
                 file_matrix[i][j] = subject_images_list[trial_matrix[i][j]]
     randomized_matrix_dataframe = pd.DataFrame(file_matrix)
-    randomized_matrix_dataframe.to_csv(os.path.join(files_path, file_name), index=False, header = None)
+    randomized_matrix_dataframe.to_csv(os.path.join(file_path, file_name), index=False, header = None)
 
 
-
-# current_matrix = pd.read_csv(os.path.join(files_path, "Randomized matrix.csv"), header = None,)
-# # filename = expinfo['participant'] + "_Randomized matrix.csv"
-# current_matrix.to_csv(os.path.join(files_path, filename),index=False, header = None)
+# current_matrix = pd.DataFrame(trial_matrix)
+# current_matrix.to_csv(os.path.join(file_path, "Randomized_Matrix_975_NumberIndex.csv"), header = None, index = False)
 
 
 
