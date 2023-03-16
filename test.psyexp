@@ -1,0 +1,89 @@
+﻿<?xml version="1.0" ?>
+<PsychoPy2experiment encoding="utf-8" version="2022.2.5">
+  <Settings>
+    <Param val="use prefs" valType="str" updates="None" name="Audio latency priority"/>
+    <Param val="use prefs" valType="str" updates="None" name="Audio lib"/>
+    <Param val="" valType="str" updates="None" name="Completed URL"/>
+    <Param val="auto" valType="str" updates="None" name="Data file delimiter"/>
+    <Param val="u'data/%s_%s_%s' % (expInfo['participant'], expName, expInfo['date'])" valType="code" updates="None" name="Data filename"/>
+    <Param val="True" valType="bool" updates="None" name="Enable Escape"/>
+    <Param val="{'participant':'f&quot;{randint(0, 999999):06.0f}&quot;', 'session':'001'}" valType="code" updates="None" name="Experiment info"/>
+    <Param val="True" valType="bool" updates="None" name="Force stereo"/>
+    <Param val="True" valType="bool" updates="None" name="Full-screen window"/>
+    <Param val="" valType="str" updates="None" name="HTML path"/>
+    <Param val="" valType="str" updates="None" name="Incomplete URL"/>
+    <Param val="testMonitor" valType="str" updates="None" name="Monitor"/>
+    <Param val="[]" valType="list" updates="None" name="Resources"/>
+    <Param val="False" valType="bool" updates="None" name="Save csv file"/>
+    <Param val="False" valType="bool" updates="None" name="Save excel file"/>
+    <Param val="False" valType="bool" updates="None" name="Save hdf5 file"/>
+    <Param val="True" valType="bool" updates="None" name="Save log file"/>
+    <Param val="True" valType="bool" updates="None" name="Save psydat file"/>
+    <Param val="True" valType="bool" updates="None" name="Save wide csv file"/>
+    <Param val="1" valType="num" updates="None" name="Screen"/>
+    <Param val="True" valType="bool" updates="None" name="Show info dlg"/>
+    <Param val="False" valType="bool" updates="None" name="Show mouse"/>
+    <Param val="height" valType="str" updates="None" name="Units"/>
+    <Param val="" valType="str" updates="None" name="Use version"/>
+    <Param val="(1024, 768)" valType="list" updates="None" name="Window size (pixels)"/>
+    <Param val="avg" valType="str" updates="None" name="blendMode"/>
+    <Param val="$[0,0,0]" valType="color" updates="None" name="color"/>
+    <Param val="rgb" valType="str" updates="None" name="colorSpace"/>
+    <Param val="100.1.1.1" valType="str" updates="None" name="elAddress"/>
+    <Param val="FILTER_LEVEL_2" valType="str" updates="None" name="elDataFiltering"/>
+    <Param val="FILTER_LEVEL_OFF" valType="str" updates="None" name="elLiveFiltering"/>
+    <Param val="EYELINK 1000 DESKTOP" valType="str" updates="None" name="elModel"/>
+    <Param val="ELLIPSE_FIT" valType="str" updates="None" name="elPupilAlgorithm"/>
+    <Param val="PUPIL_AREA" valType="str" updates="None" name="elPupilMeasure"/>
+    <Param val="1000" valType="num" updates="None" name="elSampleRate"/>
+    <Param val="False" valType="bool" updates="None" name="elSimMode"/>
+    <Param val="RIGHT_EYE" valType="str" updates="None" name="elTrackEyes"/>
+    <Param val="PUPIL_CR_TRACKING" valType="str" updates="None" name="elTrackingMode"/>
+    <Param val="test" valType="str" updates="None" name="expName"/>
+    <Param val="on Sync" valType="str" updates="None" name="exportHTML"/>
+    <Param val="None" valType="str" updates="None" name="eyetracker"/>
+    <Param val="127.0.0.1" valType="str" updates="None" name="gpAddress"/>
+    <Param val="4242" valType="num" updates="None" name="gpPort"/>
+    <Param val="ioHub" valType="str" updates="None" name="keyboardBackend"/>
+    <Param val="exp" valType="code" updates="None" name="logging level"/>
+    <Param val="MIDDLE_BUTTON" valType="list" updates="None" name="mgBlink"/>
+    <Param val="CONTINUOUS" valType="str" updates="None" name="mgMove"/>
+    <Param val="0.5" valType="num" updates="None" name="mgSaccade"/>
+    <Param val="0.6" valType="num" updates="None" name="plConfidenceThreshold"/>
+    <Param val="True" valType="bool" updates="None" name="plPupilCaptureRecordingEnabled"/>
+    <Param val="" valType="str" updates="None" name="plPupilCaptureRecordingLocation"/>
+    <Param val="127.0.0.1" valType="str" updates="None" name="plPupilRemoteAddress"/>
+    <Param val="50020" valType="num" updates="None" name="plPupilRemotePort"/>
+    <Param val="1000" valType="num" updates="None" name="plPupilRemoteTimeoutMs"/>
+    <Param val="False" valType="bool" updates="None" name="plPupillometryOnly"/>
+    <Param val="psychopy_iohub_surface" valType="str" updates="None" name="plSurfaceName"/>
+    <Param val="" valType="str" updates="None" name="tbLicenseFile"/>
+    <Param val="" valType="str" updates="None" name="tbModel"/>
+    <Param val="60" valType="num" updates="None" name="tbSampleRate"/>
+    <Param val="" valType="str" updates="None" name="tbSerialNo"/>
+  </Settings>
+  <Routines>
+    <Routine name="trial">
+      <CodeComponent name="code">
+        <Param val="" valType="extendedCode" updates="constant" name="Before Experiment"/>
+        <Param val="" valType="extendedCode" updates="constant" name="Before JS Experiment"/>
+        <Param val="" valType="extendedCode" updates="constant" name="Begin Experiment"/>
+        <Param val="" valType="extendedCode" updates="constant" name="Begin JS Experiment"/>
+        <Param val="" valType="extendedCode" updates="constant" name="Begin JS Routine"/>
+        <Param val="import pandas as pd&amp;#10;from copy import deepcopy&amp;#10;import random&amp;#10;import sys&amp;#10;import gc&amp;#10;&amp;#10;files_path= os.path.join(&quot;D:\\&quot;, &quot;Users&quot;, &quot;Niklas&quot;, &quot;eeg_experiment-main&quot;)&amp;#10;matrix_name = expInfo['participant'] + &quot;_randomized_matrix_702.csv&quot;&amp;#10;&amp;#10;with open(os.path.join(files_path, &quot;Instruction.md&quot;), 'r') as instruction_file:     #Load the instruction markdown file&amp;#10;    instruction_text = instruction_file.read()          #save the text&amp;#10;&amp;#10;   #Track with the current trial&amp;#10;training_trial = 0&amp;#10;&amp;#10;cur_triger = 0&amp;#10;images_per_trial = 20&amp;#10;trials_per_block = 30&amp;#10;blocks_per_repetition = 8&amp;#10;total_repetition = 1&amp;#10;total_blocks = blocks_per_repetition * total_repetition&amp;#10;max_trial = trials_per_block * total_blocks #The maximum of trials&amp;#10;Training_Repetition = 9999&amp;#10;number_of_sub = len(os.listdir(os.path.join(files_path, &quot;Subject_matrix&quot;)))     #Get the amount of subjets&amp;#10;&amp;#10;orig_image_width = 2155&amp;#10;orig_image_height= 1440&amp;#10;image_h = win.size[1]           #Set the screen width as the width of images&amp;#10;aspect_ratio = orig_image_width/orig_image_height       #Set the aspect ratio of image&amp;#10;image_w = int(image_h * aspect_ratio)     #Set the height of images&amp;#10;&amp;#10;&amp;#10;&amp;#10;&amp;#10;for eeg_trial_num in range(240):&amp;#10;    Image_loaded_list = []&amp;#10;    cur_sequence = pd.read_csv(os.path.join(files_path, &quot;Subject_matrix&quot;, matrix_name), header = None, skiprows = list(range(0,eeg_trial_num)) + list(range(eeg_trial_num+1,max_trial)) )&amp;#10;    cur_sequence_images = cur_sequence.iloc[0]   #Use the indexs to get the images' name&amp;#10;    for i in range(20):&amp;#10;        new_image = visual.ImageStim(&amp;#10;        win=win,&amp;#10;        name='Images'+ str(i), units='pix', &amp;#10;        image=None, mask=None, anchor='center',&amp;#10;        ori=0.0, pos=(0, 0), size=[image_w, image_h],&amp;#10;        color=[1,1,1], colorSpace='rgb', opacity=None,&amp;#10;        flipHoriz=True, flipVert=False,&amp;#10;        texRes=128.0, interpolate=True, depth=-1.0)&amp;#10;        &amp;#10;        new_image.setImage(cur_sequence_images[i])&amp;#10;        Image_loaded_list.append(new_image)&amp;#10;#        del new_image&amp;#10;    print(&quot;#Block: &quot;, int(eeg_trial_num/trials_per_block)+1, &quot;\t#Trial: &quot;, int(eeg_trial_num % trials_per_block) ,&quot;\tTotal trials: &quot;, eeg_trial_num+1, &quot;/&quot;, max_trial)&amp;#10;    sys.stdout.flush()&amp;#10;    del cur_sequence&amp;#10;    del cur_sequence_images&amp;#10;    del Image_loaded_list&amp;#10;    gc.collect()&amp;#10;" valType="extendedCode" updates="constant" name="Begin Routine"/>
+        <Param val="Py" valType="str" updates="None" name="Code Type"/>
+        <Param val="" valType="extendedCode" updates="constant" name="Each Frame"/>
+        <Param val="" valType="extendedCode" updates="constant" name="Each JS Frame"/>
+        <Param val="" valType="extendedCode" updates="constant" name="End Experiment"/>
+        <Param val="" valType="extendedCode" updates="constant" name="End JS Experiment"/>
+        <Param val="" valType="extendedCode" updates="constant" name="End JS Routine"/>
+        <Param val="" valType="extendedCode" updates="constant" name="End Routine"/>
+        <Param val="False" valType="bool" updates="None" name="disabled"/>
+        <Param val="code" valType="code" updates="None" name="name"/>
+      </CodeComponent>
+    </Routine>
+  </Routines>
+  <Flow>
+    <Routine name="trial"/>
+  </Flow>
+</PsychoPy2experiment>
