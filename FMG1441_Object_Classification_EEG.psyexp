@@ -496,7 +496,7 @@
         <Param val="" valType="extendedCode" updates="constant" name="End Experiment"/>
         <Param val="" valType="extendedCode" updates="constant" name="End JS Experiment"/>
         <Param val="" valType="extendedCode" updates="constant" name="End JS Routine"/>
-        <Param val="#gray_trigger_index = 252&amp;#10;if cur_triger &gt;= 251:&amp;#10;    cur_triger = 0&amp;#10;else:&amp;#10;    cur_triger += 1&amp;#10;&amp;#10;Image_index += 1&amp;#10;if Image_index &lt; images_per_trial:&amp;#10;    Images = Image_loaded_list[Image_index]&amp;#10;    &amp;#10;#print(Image_index)" valType="extendedCode" updates="constant" name="End Routine"/>
+        <Param val="#gray_trigger_index = 252&amp;#10;if cur_triger &gt;= 251:&amp;#10;    cur_triger = 0&amp;#10;else:&amp;#10;    cur_triger += 1&amp;#10;&amp;#10;Image_index += 1&amp;#10;&amp;#10;del Preload_and_Blank_ScreenComponents[0]&amp;#10;del Preload_and_Blank_ScreenComponents&amp;#10;if Image_index &lt; images_per_trial:&amp;#10;    del Images&amp;#10;    Images = Image_loaded_list[Image_index]&amp;#10;    &amp;#10;#print(Image_index)" valType="extendedCode" updates="constant" name="End Routine"/>
         <Param val="False" valType="bool" updates="None" name="disabled"/>
         <Param val="trigger_update" valType="code" updates="None" name="name"/>
       </CodeComponent>
@@ -508,7 +508,7 @@
         <Param val="" valType="extendedCode" updates="constant" name="Begin Experiment"/>
         <Param val="" valType="extendedCode" updates="constant" name="Begin JS Experiment"/>
         <Param val="" valType="extendedCode" updates="constant" name="Begin JS Routine"/>
-        <Param val="#Load the randomized images matrix, &amp;#10;#each row of the matrix represents a sequence of images,&amp;#10;#each element should contain a image number,&amp;#10;#The code below loads the corresponding row of trial from the matrix,&amp;#10;#please change the path below&amp;#10;cur_sequence = pd.read_csv(os.path.join(files_path, &quot;Subject_matrix&quot;, matrix_name), header = None, skiprows = list(range(0,eeg_trial_num)) + list(range(eeg_trial_num+1,max_trial)) )&amp;#10;cur_sequence_images = cur_sequence.iloc[0]   #Use the indexs to get the images' name&amp;#10;#cur_sequence_images = [ os.path.join(images_path, i) for i in cur_sequence_images]&amp;#10;&amp;#10;#Load the csv file which contain the correct answers for each trial, &amp;#10;#each row contains one answer for a trial, the value should be either 'y' or 'n',&amp;#10;#The code below loads the corresponding row of trial from the file,&amp;#10;#please change the path below&amp;#10;cur_correct_list = pd.read_csv(os.path.join(files_path, &quot;Correct_answers_702.csv&quot;), header = None, skiprows = list(range(0,eeg_trial_num)) + list(range(eeg_trial_num+1,max_trial)) )&amp;#10;cur_correct = cur_correct_list[0][0]     #Get the correct answer&amp;#10;#eeg_trial_num += 1      #Increase the trial index&amp;#10;&amp;#10;gray_trigger_index = 251&amp;#10;&amp;#10;print(&quot;#Block: &quot;, int(eeg_trial_num/trials_per_block)+1, &quot;\t#Trial: &quot;, int(eeg_trial_num % trials_per_block) ,&quot;\tTotal trials: &quot;, eeg_trial_num+1, &quot;/&quot;, max_trial)&amp;#10;sys.stdout.flush()&amp;#10;eeg_trial_num += 1" valType="extendedCode" updates="constant" name="Begin Routine"/>
+        <Param val="#Load the randomized images matrix, &amp;#10;#each row of the matrix represents a sequence of images,&amp;#10;#each element should contain a image number,&amp;#10;#The code below loads the corresponding row of trial from the matrix,&amp;#10;#please change the path below&amp;#10;cur_sequence = pd.read_csv(os.path.join(files_path, &quot;Subject_matrix&quot;, matrix_name), header = None, skiprows = list(range(0,eeg_trial_num)) + list(range(eeg_trial_num+1,max_trial)) ).iloc[0]&amp;#10;#cur_sequence_images = cur_sequence.iloc[0]   #Use the indexs to get the images' name&amp;#10;#cur_sequence_images = [ os.path.join(images_path, i) for i in cur_sequence_images]&amp;#10;&amp;#10;#Load the csv file which contain the correct answers for each trial, &amp;#10;#each row contains one answer for a trial, the value should be either 'y' or 'n',&amp;#10;#The code below loads the corresponding row of trial from the file,&amp;#10;#please change the path below&amp;#10;cur_correct = pd.read_csv(os.path.join(files_path, &quot;Correct_answers_702.csv&quot;), header = None, skiprows = list(range(0,eeg_trial_num)) + list(range(eeg_trial_num+1,max_trial)) ).iloc[0][0]&amp;#10;#cur_correct = cur_correct_list[0][0]     #Get the correct answer&amp;#10;#eeg_trial_num += 1      #Increase the trial index&amp;#10;&amp;#10;gray_trigger_index = 251&amp;#10;&amp;#10;print(&quot;#Block: &quot;, int(eeg_trial_num/trials_per_block)+1, &quot;\t#Trial: &quot;, int(eeg_trial_num % trials_per_block) ,&quot;\tTotal trials: &quot;, eeg_trial_num+1, &quot;/&quot;, max_trial)&amp;#10;sys.stdout.flush()&amp;#10;eeg_trial_num += 1" valType="extendedCode" updates="constant" name="Begin Routine"/>
         <Param val="Py" valType="str" updates="None" name="Code Type"/>
         <Param val="" valType="extendedCode" updates="constant" name="Each Frame"/>
         <Param val="" valType="extendedCode" updates="constant" name="Each JS Frame"/>
@@ -603,7 +603,7 @@
         <Param val="" valType="extendedCode" updates="constant" name="End Experiment"/>
         <Param val="" valType="extendedCode" updates="constant" name="End JS Experiment"/>
         <Param val="" valType="extendedCode" updates="constant" name="End JS Routine"/>
-        <Param val="Image_loaded_list = []&amp;#10;for i in range(20):&amp;#10;    &amp;#10;    new_image = visual.ImageStim(&amp;#10;    win=win,&amp;#10;    name='Images'+ str(i), units='pix', &amp;#10;    image=None, mask=None, anchor='center',&amp;#10;    ori=0.0, pos=(0, 0), size=[image_w, image_h],&amp;#10;    color=[1,1,1], colorSpace='rgb', opacity=None,&amp;#10;    flipHoriz=True, flipVert=False,&amp;#10;    texRes=128.0, interpolate=True, depth=-1.0)&amp;#10;    &amp;#10;    new_image.setImage(cur_sequence_images[i])&amp;#10;    Image_loaded_list.append(new_image)&amp;#10;&amp;#10;Image_index = 0&amp;#10;Images = Image_loaded_list[Image_index]&amp;#10;&amp;#10;#cur_trial_data = {'current_images_list' : cur_sequence_images, 'blank_len' : [len_blank_long] + [len_blank_short] * (images_per_trial-1) }     &amp;#10;#cur_sequence_images = pd.DataFrame(cur_trial_data)      #Convert the sequence into DataFrame&amp;#10;#&amp;#10;##Save the current images list into the loop file&amp;#10;#cur_sequence_images.to_csv(os.path.join(files_path, &quot;loopTemplate.csv&quot;),index=False)&amp;#10;gray_trigger_index = 252&amp;#10;" valType="extendedCode" updates="constant" name="End Routine"/>
+        <Param val="Image_loaded_list = []&amp;#10;for i in range(20):&amp;#10;    &amp;#10;    new_image = visual.ImageStim(&amp;#10;    win=win,&amp;#10;    name='Images'+ str(i), units='pix', &amp;#10;    image=None, mask=None, anchor='center',&amp;#10;    ori=0.0, pos=(0, 0), size=[image_w, image_h],&amp;#10;    color=[1,1,1], colorSpace='rgb', opacity=None,&amp;#10;    flipHoriz=True, flipVert=False,&amp;#10;    texRes=128.0, interpolate=True, depth=-1.0)&amp;#10;        &amp;#10;    Image_loaded_list.append(new_image)&amp;#10;    del new_image&amp;#10;    Image_loaded_list[i].setImage(cur_sequence[i])&amp;#10;&amp;#10;Image_index = 0&amp;#10;del Images&amp;#10;Images = Image_loaded_list[Image_index]&amp;#10;&amp;#10;#cur_trial_data = {'current_images_list' : cur_sequence_images, 'blank_len' : [len_blank_long] + [len_blank_short] * (images_per_trial-1) }     &amp;#10;#cur_sequence_images = pd.DataFrame(cur_trial_data)      #Convert the sequence into DataFrame&amp;#10;#&amp;#10;##Save the current images list into the loop file&amp;#10;#cur_sequence_images.to_csv(os.path.join(files_path, &quot;loopTemplate.csv&quot;),index=False)&amp;#10;gray_trigger_index = 252&amp;#10;" valType="extendedCode" updates="constant" name="End Routine"/>
         <Param val="False" valType="bool" updates="None" name="disabled"/>
         <Param val="Preload_Images" valType="code" updates="None" name="name"/>
       </CodeComponent>
@@ -647,7 +647,7 @@
         <Param val="" valType="extendedCode" updates="constant" name="End Experiment"/>
         <Param val="" valType="extendedCode" updates="constant" name="End JS Experiment"/>
         <Param val="" valType="extendedCode" updates="constant" name="End JS Routine"/>
-        <Param val="del cur_sequence&amp;#10;del cur_sequence_images&amp;#10;del cur_correct_list&amp;#10;del cur_correct&amp;#10;del Image_loaded_list&amp;#10;del new_image&amp;#10;del Image_index&amp;#10;gc.collect()" valType="extendedCode" updates="constant" name="End Routine"/>
+        <Param val="while len(Image_loaded_list) &gt; 0:&amp;#10;    del Image_loaded_list[0]&amp;#10;&amp;#10;for i in range(images_per_trial):&amp;#10;    del cur_sequence[i]&amp;#10;&amp;#10;del cur_sequence&amp;#10;del cur_correct&amp;#10;del Image_loaded_list&amp;#10;del Image_index&amp;#10;gc.collect()" valType="extendedCode" updates="constant" name="End Routine"/>
         <Param val="False" valType="bool" updates="None" name="disabled"/>
         <Param val="Free_Memeory" valType="code" updates="None" name="name"/>
       </CodeComponent>
@@ -828,34 +828,6 @@
       <Param name="textColor" updates="None" val="white" valType="color"/>
       <Param name="units" updates="None" val="from exp settings" valType="str"/>
     </EyetrackerCalibrationRoutine>
-    <EyetrackerValidationRoutine name="validation">
-      <Param name="borderColor" updates="None" val="black" valType="color"/>
-      <Param name="borderWidth" updates="None" val="2" valType="num"/>
-      <Param name="colorSpace" updates="None" val="rgb" valType="str"/>
-      <Param name="cursorFillColor" updates="None" val="red" valType="color"/>
-      <Param name="disabled" updates="None" val="False" valType="bool"/>
-      <Param name="expandDur" updates="None" val="1" valType="num"/>
-      <Param name="expandScale" updates="None" val="1.5" valType="num"/>
-      <Param name="fillColor" updates="None" val="" valType="color"/>
-      <Param name="innerBorderColor" updates="None" val="black" valType="color"/>
-      <Param name="innerBorderWidth" updates="None" val="2" valType="num"/>
-      <Param name="innerFillColor" updates="None" val="red" valType="color"/>
-      <Param name="innerRadius" updates="None" val="0.0035" valType="num"/>
-      <Param name="movementAnimation" updates="None" val="True" valType="bool"/>
-      <Param name="movementDur" updates="None" val="1.0" valType="num"/>
-      <Param name="name" updates="None" val="validation" valType="code"/>
-      <Param name="outerRadius" updates="None" val="0.01" valType="num"/>
-      <Param name="progressMode" updates="None" val="time" valType="str"/>
-      <Param name="randomisePos" updates="None" val="True" valType="bool"/>
-      <Param name="saveAsImg" updates="None" val="False" valType="bool"/>
-      <Param name="showResults" updates="None" val="True" valType="bool"/>
-      <Param name="targetDelay" updates="None" val="1.0" valType="num"/>
-      <Param name="targetDur" updates="None" val="1.5" valType="num"/>
-      <Param name="targetLayout" updates="None" val="FIVE_POINTS" valType="str"/>
-      <Param name="targetPositions" updates="None" val="NINE_POINTS" valType="list"/>
-      <Param name="textColor" updates="None" val="auto" valType="color"/>
-      <Param name="units" updates="None" val="from exp settings" valType="str"/>
-    </EyetrackerValidationRoutine>
     <Routine name="Block_Feedback">
       <CodeComponent name="accuracy_rate">
         <Param val="" valType="extendedCode" updates="constant" name="Before Experiment"/>
@@ -995,7 +967,7 @@
         <Param val="" valType="extendedCode" updates="constant" name="End Experiment"/>
         <Param val="" valType="extendedCode" updates="constant" name="End JS Experiment"/>
         <Param val="" valType="extendedCode" updates="constant" name="End JS Routine"/>
-        <Param val="Image_index += 1&amp;#10;if Image_index &lt; images_per_trial:&amp;#10;    Training_Images = Image_loaded_list[Image_index]&amp;#10;" valType="extendedCode" updates="constant" name="End Routine"/>
+        <Param val="Image_index += 1&amp;#10;&amp;#10;del TrainingComponents[0]&amp;#10;del TrainingComponents&amp;#10;if Image_index &lt; images_per_trial:&amp;#10;&amp;#10;    del Training_Images&amp;#10;    Training_Images = Image_loaded_list[Image_index]&amp;#10;" valType="extendedCode" updates="constant" name="End Routine"/>
         <Param val="False" valType="bool" updates="None" name="disabled"/>
         <Param val="Update_Training_Images" valType="code" updates="None" name="name"/>
       </CodeComponent>
@@ -1069,7 +1041,7 @@
         <Param val="" valType="extendedCode" updates="constant" name="Begin Experiment"/>
         <Param val="" valType="extendedCode" updates="constant" name="Begin JS Experiment"/>
         <Param val="" valType="extendedCode" updates="constant" name="Begin JS Routine"/>
-        <Param val="#Load the randomized images matrix, &amp;#10;#each row of the matrix represents a sequence of images,&amp;#10;#each element should contain a image number,&amp;#10;#The code below loads the corresponding row of trial from the matrix,&amp;#10;#please change the path below&amp;#10;training_trial += 1&amp;#10;if training_trial &gt; 2:&amp;#10;    training_trial = 1&amp;#10;training_matrix_name = &quot;sub_&quot; + str(random.randint(0,number_of_sub)) + &quot;_randomized_matrix_702.csv&quot;&amp;#10;cur_sequence = pd.read_csv(os.path.join(files_path, &quot;Subject_matrix&quot;, training_matrix_name), header = None, skiprows = list(range(0,training_trial)) + list(range(training_trial+1,max_trial)) )&amp;#10;cur_sequence_images = cur_sequence.iloc[0]   #Use the indexs to get the images' name&amp;#10;&amp;#10;#Load the csv file which contain the correct answers for each trial, &amp;#10;#each row contains one answer for a trial, the value should be either 'y' or 'n',&amp;#10;#The code below loads the corresponding row of trial from the file,&amp;#10;#please change the path below&amp;#10;cur_correct_list = pd.read_csv(os.path.join(files_path, &quot;Correct_answers_702.csv&quot;), header = None, skiprows = list(range(0,training_trial)) + list(range(training_trial+1,max_trial)) )&amp;#10;cur_correct = cur_correct_list[0][0]     #Get the correct answer&amp;#10;&amp;#10;" valType="extendedCode" updates="constant" name="Begin Routine"/>
+        <Param val="#Load the randomized images matrix, &amp;#10;#each row of the matrix represents a sequence of images,&amp;#10;#each element should contain a image number,&amp;#10;#The code below loads the corresponding row of trial from the matrix,&amp;#10;#please change the path below&amp;#10;training_trial += 1&amp;#10;if training_trial &gt; 2:&amp;#10;    training_trial = 1&amp;#10;training_matrix_name = &quot;sub_&quot; + str(random.randint(0,number_of_sub)) + &quot;_randomized_matrix_702.csv&quot;&amp;#10;cur_sequence = pd.read_csv(os.path.join(files_path, &quot;Subject_matrix&quot;, training_matrix_name), header = None, skiprows = list(range(0,training_trial)) + list(range(training_trial+1,max_trial)) ).iloc[0]&amp;#10;#cur_sequence_images = cur_sequence.iloc[0]   #Use the indexs to get the images' name&amp;#10;&amp;#10;#Load the csv file which contain the correct answers for each trial, &amp;#10;#each row contains one answer for a trial, the value should be either 'y' or 'n',&amp;#10;#The code below loads the corresponding row of trial from the file,&amp;#10;#please change the path below&amp;#10;cur_correct = pd.read_csv(os.path.join(files_path, &quot;Correct_answers_702.csv&quot;), header = None, skiprows = list(range(0,training_trial)) + list(range(training_trial+1,max_trial)) ).iloc[0][0]&amp;#10;#cur_correct = cur_correct_list[0][0]     #Get the correct answer&amp;#10;&amp;#10;" valType="extendedCode" updates="constant" name="Begin Routine"/>
         <Param val="Py" valType="str" updates="None" name="Code Type"/>
         <Param val="" valType="extendedCode" updates="constant" name="Each Frame"/>
         <Param val="" valType="extendedCode" updates="constant" name="Each JS Frame"/>
@@ -1147,7 +1119,7 @@
         <Param val="" valType="extendedCode" updates="constant" name="End Experiment"/>
         <Param val="" valType="extendedCode" updates="constant" name="End JS Experiment"/>
         <Param val="" valType="extendedCode" updates="constant" name="End JS Routine"/>
-        <Param val="Image_loaded_list = []&amp;#10;for i in range(20):&amp;#10;    &amp;#10;    new_image = visual.ImageStim(&amp;#10;    win=win,&amp;#10;    name='Training_Images'+ str(i), units='pix', &amp;#10;    image=None, mask=None, anchor='center',&amp;#10;    ori=0.0, pos=(0, 0), size=[image_w, image_h],&amp;#10;    color=[1,1,1], colorSpace='rgb', opacity=None,&amp;#10;    flipHoriz=True, flipVert=False,&amp;#10;    texRes=128.0, interpolate=True, depth=-1.0)&amp;#10;    &amp;#10;    new_image.setImage(cur_sequence_images[i])&amp;#10;    Image_loaded_list.append(new_image)&amp;#10;&amp;#10;Image_index = 0&amp;#10;Training_Images = Image_loaded_list[Image_index]&amp;#10;&amp;#10;#cur_trial_data = {'current_images_list' : cur_sequence_images, 'blank_len' : [len_blank_long] + [len_blank_short] * (images_per_trial-1) }     &amp;#10;#cur_sequence_images = pd.DataFrame(cur_trial_data)      #Convert the sequence into DataFrame&amp;#10;#&amp;#10;##Save the current images list into the loop file&amp;#10;#cur_sequence_images.to_csv(os.path.join(files_path, &quot;loopTemplate.csv&quot;),index=False)" valType="extendedCode" updates="constant" name="End Routine"/>
+        <Param val="Image_loaded_list = []&amp;#10;for i in range(20):&amp;#10;    &amp;#10;    new_image = visual.ImageStim(&amp;#10;    win=win,&amp;#10;    name='Training_Images'+ str(i), units='pix', &amp;#10;    image=None, mask=None, anchor='center',&amp;#10;    ori=0.0, pos=(0, 0), size=[image_w, image_h],&amp;#10;    color=[1,1,1], colorSpace='rgb', opacity=None,&amp;#10;    flipHoriz=True, flipVert=False,&amp;#10;    texRes=128.0, interpolate=True, depth=-1.0)&amp;#10;    &amp;#10;    Image_loaded_list.append(new_image)&amp;#10;    del new_image&amp;#10;    Image_loaded_list[i].setImage(cur_sequence[i])&amp;#10;&amp;#10;Image_index = 0&amp;#10;del Training_Images&amp;#10;Training_Images = Image_loaded_list[Image_index]&amp;#10;&amp;#10;#cur_trial_data = {'current_images_list' : cur_sequence_images, 'blank_len' : [len_blank_long] + [len_blank_short] * (images_per_trial-1) }     &amp;#10;#cur_sequence_images = pd.DataFrame(cur_trial_data)      #Convert the sequence into DataFrame&amp;#10;#&amp;#10;##Save the current images list into the loop file&amp;#10;#cur_sequence_images.to_csv(os.path.join(files_path, &quot;loopTemplate.csv&quot;),index=False)" valType="extendedCode" updates="constant" name="End Routine"/>
         <Param val="False" valType="bool" updates="None" name="disabled"/>
         <Param val="Trainging_Preload_Images" valType="code" updates="None" name="name"/>
       </CodeComponent>
@@ -1307,15 +1279,41 @@
         <Param val="" valType="extendedCode" updates="constant" name="End Experiment"/>
         <Param val="" valType="extendedCode" updates="constant" name="End JS Experiment"/>
         <Param val="" valType="extendedCode" updates="constant" name="End JS Routine"/>
-        <Param val="del training_matrix_name&amp;#10;del cur_sequence&amp;#10;del cur_sequence_images&amp;#10;del cur_correct&amp;#10;del cur_correct_list&amp;#10;del Image_loaded_list&amp;#10;del new_image&amp;#10;del Image_index&amp;#10;&amp;#10;gc.collect()" valType="extendedCode" updates="constant" name="End Routine"/>
+        <Param val="while len(Image_loaded_list) &gt; 0:&amp;#10;    del Image_loaded_list[0]&amp;#10;&amp;#10;for i in range(images_per_trial):&amp;#10;    del cur_sequence[i]&amp;#10;    &amp;#10;del training_matrix_name&amp;#10;del cur_sequence&amp;#10;del cur_correct&amp;#10;del Image_loaded_list&amp;#10;del Image_index&amp;#10;&amp;#10;gc.collect()" valType="extendedCode" updates="constant" name="End Routine"/>
         <Param val="False" valType="bool" updates="None" name="disabled"/>
         <Param val="Free_Memory_Training" valType="code" updates="None" name="name"/>
       </CodeComponent>
     </Routine>
+    <EyetrackerValidationRoutine name="validation">
+      <Param name="borderColor" updates="None" val="black" valType="color"/>
+      <Param name="borderWidth" updates="None" val="2" valType="num"/>
+      <Param name="colorSpace" updates="None" val="rgb" valType="str"/>
+      <Param name="cursorFillColor" updates="None" val="red" valType="color"/>
+      <Param name="disabled" updates="None" val="False" valType="bool"/>
+      <Param name="expandDur" updates="None" val="1" valType="num"/>
+      <Param name="expandScale" updates="None" val="1.5" valType="num"/>
+      <Param name="fillColor" updates="None" val="" valType="color"/>
+      <Param name="innerBorderColor" updates="None" val="black" valType="color"/>
+      <Param name="innerBorderWidth" updates="None" val="2" valType="num"/>
+      <Param name="innerFillColor" updates="None" val="red" valType="color"/>
+      <Param name="innerRadius" updates="None" val="0.0035" valType="num"/>
+      <Param name="movementAnimation" updates="None" val="True" valType="bool"/>
+      <Param name="movementDur" updates="None" val="1.0" valType="num"/>
+      <Param name="name" updates="None" val="validation" valType="code"/>
+      <Param name="outerRadius" updates="None" val="0.01" valType="num"/>
+      <Param name="progressMode" updates="None" val="time" valType="str"/>
+      <Param name="randomisePos" updates="None" val="True" valType="bool"/>
+      <Param name="saveAsImg" updates="None" val="False" valType="bool"/>
+      <Param name="showResults" updates="None" val="False" valType="bool"/>
+      <Param name="targetDelay" updates="None" val="1.0" valType="num"/>
+      <Param name="targetDur" updates="None" val="1.5" valType="num"/>
+      <Param name="targetLayout" updates="None" val="FIVE_POINTS" valType="str"/>
+      <Param name="targetPositions" updates="None" val="NINE_POINTS" valType="list"/>
+      <Param name="textColor" updates="None" val="auto" valType="color"/>
+      <Param name="units" updates="None" val="from exp settings" valType="str"/>
+    </EyetrackerValidationRoutine>
   </Routines>
   <Flow>
-    <EyetrackerCalibrationRoutine name="calibration"/>
-    <EyetrackerValidationRoutine name="validation"/>
     <Routine name="Initialization"/>
     <Routine name="Introduction"/>
     <LoopInitiator loopType="TrialHandler" name="Training_Blocks">

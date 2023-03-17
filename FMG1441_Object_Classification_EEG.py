@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 """
 This experiment was created using PsychoPy3 Experiment Builder (v2022.2.5),
-    on maart 16, 2023, at 15:10
+    on maart 17, 2023, at 10:45
 If you publish work using this script the most relevant publication is:
 
     Peirce J, Gray JR, Simpson S, MacAskill M, Höchenberger R, Sogo H, Kastman E, Lindeløv JK. (2019) 
@@ -417,51 +417,6 @@ text = visual.TextStim(win=win, name='text',
 # Create some handy timers
 globalClock = core.Clock()  # to track the time since experiment started
 routineTimer = core.Clock()  # to track time remaining of each (possibly non-slip) routine 
-# define target for calibration
-calibrationTarget = visual.TargetStim(win, 
-    name='calibrationTarget',
-    radius=0.01, fillColor='', borderColor='black', lineWidth=2.0,
-    innerRadius=0.0035, innerFillColor='red', innerBorderColor='black', innerLineWidth=2.0,
-    colorSpace='rgb', units=None
-)
-# define parameters for calibration
-calibration = hardware.eyetracker.EyetrackerCalibration(win, 
-    eyetracker, calibrationTarget,
-    units=None, colorSpace='rgb',
-    progressMode='time', targetDur=1.5, expandScale=1.5,
-    targetLayout='FIVE_POINTS', randomisePos=True, textColor='white',
-    movementAnimation=True, targetDelay=1.0
-)
-# run calibration
-calibration.run()
-# clear any keypresses from during calibration so they don't interfere with the experiment
-defaultKeyboard.clearEvents()
-# the Routine "calibration" was not non-slip safe, so reset the non-slip timer
-routineTimer.reset()
-# define target for validation
-validationTarget = visual.TargetStim(win, 
-    name='validationTarget',
-    radius=0.01, fillColor='', borderColor='black', lineWidth=2.0,
-    innerRadius=0.0035, innerFillColor='red', innerBorderColor='black', innerLineWidth=2.0,
-    colorSpace='rgb', units=None
-)
-# define parameters for validation
-validation = iohub.ValidationProcedure(win,
-    target=validationTarget,
-    gaze_cursor='red', 
-    positions='FIVE_POINTS', randomize_positions=True,
-    expand_scale=1.5, target_duration=1.5,
-    enable_position_animation=True, target_delay=1.0,
-    progress_on_key=None, text_color='auto',
-    show_results_screen=True, save_results_screen=False,
-    color_space='rgb', unit_type=None
-)
-# run validation
-validation.run()
-# clear any keypresses from during validation so they don't interfere with the experiment
-defaultKeyboard.clearEvents()
-# the Routine "validation" was not non-slip safe, so reset the non-slip timer
-routineTimer.reset()
 
 # --- Prepare to start Routine "Initialization" ---
 continueRoutine = True
@@ -840,15 +795,15 @@ for thisTraining_Block in Training_Blocks:
         if training_trial > 2:
             training_trial = 1
         training_matrix_name = "sub_" + str(random.randint(0,number_of_sub)) + "_randomized_matrix_702.csv"
-        cur_sequence = pd.read_csv(os.path.join(files_path, "Subject_matrix", training_matrix_name), header = None, skiprows = list(range(0,training_trial)) + list(range(training_trial+1,max_trial)) )
-        cur_sequence_images = cur_sequence.iloc[0]   #Use the indexs to get the images' name
+        cur_sequence = pd.read_csv(os.path.join(files_path, "Subject_matrix", training_matrix_name), header = None, skiprows = list(range(0,training_trial)) + list(range(training_trial+1,max_trial)) ).iloc[0]
+        #cur_sequence_images = cur_sequence.iloc[0]   #Use the indexs to get the images' name
         
         #Load the csv file which contain the correct answers for each trial, 
         #each row contains one answer for a trial, the value should be either 'y' or 'n',
         #The code below loads the corresponding row of trial from the file,
         #please change the path below
-        cur_correct_list = pd.read_csv(os.path.join(files_path, "Correct_answers_702.csv"), header = None, skiprows = list(range(0,training_trial)) + list(range(training_trial+1,max_trial)) )
-        cur_correct = cur_correct_list[0][0]     #Get the correct answer
+        cur_correct = pd.read_csv(os.path.join(files_path, "Correct_answers_702.csv"), header = None, skiprows = list(range(0,training_trial)) + list(range(training_trial+1,max_trial)) ).iloc[0][0]
+        #cur_correct = cur_correct_list[0][0]     #Get the correct answer
         
         
         # keep track of which components have finished
@@ -948,10 +903,12 @@ for thisTraining_Block in Training_Blocks:
             flipHoriz=True, flipVert=False,
             texRes=128.0, interpolate=True, depth=-1.0)
             
-            new_image.setImage(cur_sequence_images[i])
             Image_loaded_list.append(new_image)
+            del new_image
+            Image_loaded_list[i].setImage(cur_sequence[i])
         
         Image_index = 0
+        del Training_Images
         Training_Images = Image_loaded_list[Image_index]
         
         #cur_trial_data = {'current_images_list' : cur_sequence_images, 'blank_len' : [len_blank_long] + [len_blank_short] * (images_per_trial-1) }     
@@ -1091,7 +1048,12 @@ for thisTraining_Block in Training_Blocks:
                     thisComponent.setAutoDraw(False)
             # Run 'End Routine' code from Update_Training_Images
             Image_index += 1
+            
+            del TrainingComponents[0]
+            del TrainingComponents
             if Image_index < images_per_trial:
+            
+                del Training_Images
                 Training_Images = Image_loaded_list[Image_index]
             
             # the Routine "Training" was not non-slip safe, so reset the non-slip timer
@@ -1347,13 +1309,16 @@ for thisTraining_Block in Training_Blocks:
             if hasattr(thisComponent, "setAutoDraw"):
                 thisComponent.setAutoDraw(False)
         # Run 'End Routine' code from Free_Memory_Training
+        while len(Image_loaded_list) > 0:
+            del Image_loaded_list[0]
+        
+        for i in range(images_per_trial):
+            del cur_sequence[i]
+            
         del training_matrix_name
         del cur_sequence
-        del cur_sequence_images
         del cur_correct
-        del cur_correct_list
         del Image_loaded_list
-        del new_image
         del Image_index
         
         gc.collect()
@@ -1529,16 +1494,16 @@ for thisBlock in Blocks:
         #each element should contain a image number,
         #The code below loads the corresponding row of trial from the matrix,
         #please change the path below
-        cur_sequence = pd.read_csv(os.path.join(files_path, "Subject_matrix", matrix_name), header = None, skiprows = list(range(0,eeg_trial_num)) + list(range(eeg_trial_num+1,max_trial)) )
-        cur_sequence_images = cur_sequence.iloc[0]   #Use the indexs to get the images' name
+        cur_sequence = pd.read_csv(os.path.join(files_path, "Subject_matrix", matrix_name), header = None, skiprows = list(range(0,eeg_trial_num)) + list(range(eeg_trial_num+1,max_trial)) ).iloc[0]
+        #cur_sequence_images = cur_sequence.iloc[0]   #Use the indexs to get the images' name
         #cur_sequence_images = [ os.path.join(images_path, i) for i in cur_sequence_images]
         
         #Load the csv file which contain the correct answers for each trial, 
         #each row contains one answer for a trial, the value should be either 'y' or 'n',
         #The code below loads the corresponding row of trial from the file,
         #please change the path below
-        cur_correct_list = pd.read_csv(os.path.join(files_path, "Correct_answers_702.csv"), header = None, skiprows = list(range(0,eeg_trial_num)) + list(range(eeg_trial_num+1,max_trial)) )
-        cur_correct = cur_correct_list[0][0]     #Get the correct answer
+        cur_correct = pd.read_csv(os.path.join(files_path, "Correct_answers_702.csv"), header = None, skiprows = list(range(0,eeg_trial_num)) + list(range(eeg_trial_num+1,max_trial)) ).iloc[0][0]
+        #cur_correct = cur_correct_list[0][0]     #Get the correct answer
         #eeg_trial_num += 1      #Increase the trial index
         
         gray_trigger_index = 251
@@ -1664,11 +1629,13 @@ for thisBlock in Blocks:
             color=[1,1,1], colorSpace='rgb', opacity=None,
             flipHoriz=True, flipVert=False,
             texRes=128.0, interpolate=True, depth=-1.0)
-            
-            new_image.setImage(cur_sequence_images[i])
+                
             Image_loaded_list.append(new_image)
+            del new_image
+            Image_loaded_list[i].setImage(cur_sequence[i])
         
         Image_index = 0
+        del Images
         Images = Image_loaded_list[Image_index]
         
         #cur_trial_data = {'current_images_list' : cur_sequence_images, 'blank_len' : [len_blank_long] + [len_blank_short] * (images_per_trial-1) }     
@@ -1860,7 +1827,11 @@ for thisBlock in Blocks:
                 cur_triger += 1
             
             Image_index += 1
+            
+            del Preload_and_Blank_ScreenComponents[0]
+            del Preload_and_Blank_ScreenComponents
             if Image_index < images_per_trial:
+                del Images
                 Images = Image_loaded_list[Image_index]
                 
             #print(Image_index)
@@ -2119,12 +2090,15 @@ for thisBlock in Blocks:
             if hasattr(thisComponent, "setAutoDraw"):
                 thisComponent.setAutoDraw(False)
         # Run 'End Routine' code from Free_Memeory
+        while len(Image_loaded_list) > 0:
+            del Image_loaded_list[0]
+        
+        for i in range(images_per_trial):
+            del cur_sequence[i]
+        
         del cur_sequence
-        del cur_sequence_images
-        del cur_correct_list
         del cur_correct
         del Image_loaded_list
-        del new_image
         del Image_index
         gc.collect()
         # using non-slip timing so subtract the expected duration of this Routine (unless ended on request)
