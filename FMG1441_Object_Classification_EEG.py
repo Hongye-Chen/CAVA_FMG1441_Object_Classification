@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 """
 This experiment was created using PsychoPy3 Experiment Builder (v2022.2.5),
-    on maart 23, 2023, at 11:57
+    on maart 29, 2023, at 14:46
 If you publish work using this script the most relevant publication is:
 
     Peirce J, Gray JR, Simpson S, MacAskill M, Höchenberger R, Sogo H, Kastman E, Lindeløv JK. (2019) 
@@ -127,9 +127,9 @@ import gc
 import array
 
 #Set the global file path
-#files_path = r"C:\Users\15202\OneDrive\C_\University of Amsterdam\Intern\\"
-#
 files_path= os.path.join("D:\\", "Users", "Niklas", "eeg_experiment-main")
+Trial_start = expInfo['participant'].split("_")
+expInfo['participant'] = Trial_start[0] + "_" + Trial_start[1]
 matrix_name = expInfo['participant'] + "_randomized_matrix_702.csv"
 save_to_data = pd.read_csv(os.path.join(files_path, "Subject_matrix", matrix_name), header = None)
 save_to_data.to_csv(os.path.join(files_path, "data", expInfo['date']+"_"+matrix_name),index=False, header = None)
@@ -148,7 +148,7 @@ with open(os.path.join(files_path, "Instruction.md"), 'r') as instruction_file: 
 eeg_trial_num = 0   #Track with the current trial
 training_trial = 0
 
-cur_triger = 0
+cur_triger = 1
 images_per_trial = 20
 trials_per_block = 30
 blocks_per_repetition = 8
@@ -197,6 +197,17 @@ Images_name_list = os.listdir(os.path.join(files_path, "Stimuli"))
 
 num_correct = 0     #initialize the number of correct answers
 
+if len(Trial_start) > 2:
+    start_from = int(Trial_start[2])
+    eeg_trial_num = int(start_from / trials_per_block) * trials_per_block
+    blocks_per_repetition -= int(start_from / trials_per_block)
+    if start_from % trials_per_block == 0:
+        eeg_trial_num -= trials_per_block
+        trials_per_block += 1
+        
+        
+#print("#Block: ", int(eeg_trial_num/trials_per_block)+1, "\t#Trial: ", int(eeg_trial_num % trials_per_block) ,"\tTotal trials: ", eeg_trial_num+1, "/", max_trial)
+#sys.stdout.flush()
 etRecord_start = hardware.eyetracker.EyetrackerControl(
     tracker=eyetracker,
     actionType='Start Only'
@@ -234,6 +245,9 @@ Instruction_content_3 = visual.TextStim(win=win, name='Instruction_content_3',
     languageStyle='LTR',
     depth=-5.0);
 Instruction_response_3 = keyboard.Keyboard()
+
+# --- Initialize components for Routine "Start_EEG_Recording" ---
+Start_EEG_trigger = parallel.ParallelPort(address='0x4050')
 
 # --- Initialize components for Routine "Training_Preload_info" ---
 Training_Long_gray_screen = visual.Rect(
@@ -812,6 +826,80 @@ if Instruction_response_3.keys != None:  # we had a response
     thisExp.addData('Instruction_response_3.rt', Instruction_response_3.rt)
 thisExp.nextEntry()
 # the Routine "Introduction" was not non-slip safe, so reset the non-slip timer
+routineTimer.reset()
+
+# --- Prepare to start Routine "Start_EEG_Recording" ---
+continueRoutine = True
+routineForceEnded = False
+# update component parameters for each repeat
+# keep track of which components have finished
+Start_EEG_RecordingComponents = [Start_EEG_trigger]
+for thisComponent in Start_EEG_RecordingComponents:
+    thisComponent.tStart = None
+    thisComponent.tStop = None
+    thisComponent.tStartRefresh = None
+    thisComponent.tStopRefresh = None
+    if hasattr(thisComponent, 'status'):
+        thisComponent.status = NOT_STARTED
+# reset timers
+t = 0
+_timeToFirstFrame = win.getFutureFlipTime(clock="now")
+frameN = -1
+
+# --- Run Routine "Start_EEG_Recording" ---
+while continueRoutine:
+    # get current time
+    t = routineTimer.getTime()
+    tThisFlip = win.getFutureFlipTime(clock=routineTimer)
+    tThisFlipGlobal = win.getFutureFlipTime(clock=None)
+    frameN = frameN + 1  # number of completed frames (so 0 is the first frame)
+    # update/draw components on each frame
+    # *Start_EEG_trigger* updates
+    if Start_EEG_trigger.status == NOT_STARTED and tThisFlip >= 0.0-frameTolerance:
+        # keep track of start time/frame for later
+        Start_EEG_trigger.frameNStart = frameN  # exact frame index
+        Start_EEG_trigger.tStart = t  # local t and not account for scr refresh
+        Start_EEG_trigger.tStartRefresh = tThisFlipGlobal  # on global time
+        win.timeOnFlip(Start_EEG_trigger, 'tStartRefresh')  # time at next scr refresh
+        # add timestamp to datafile
+        thisExp.timestampOnFlip(win, 'Start_EEG_trigger.started')
+        Start_EEG_trigger.status = STARTED
+        win.callOnFlip(Start_EEG_trigger.setData, int(254))
+    if Start_EEG_trigger.status == STARTED:
+        if frameN >= (Start_EEG_trigger.frameNStart + 1):
+            # keep track of stop time/frame for later
+            Start_EEG_trigger.tStop = t  # not accounting for scr refresh
+            Start_EEG_trigger.frameNStop = frameN  # exact frame index
+            # add timestamp to datafile
+            thisExp.timestampOnFlip(win, 'Start_EEG_trigger.stopped')
+            Start_EEG_trigger.status = FINISHED
+            win.callOnFlip(Start_EEG_trigger.setData, int())
+    
+    # check for quit (typically the Esc key)
+    if endExpNow or defaultKeyboard.getKeys(keyList=["escape"]):
+        core.quit()
+    
+    # check if all components have finished
+    if not continueRoutine:  # a component has requested a forced-end of Routine
+        routineForceEnded = True
+        break
+    continueRoutine = False  # will revert to True if at least one component still running
+    for thisComponent in Start_EEG_RecordingComponents:
+        if hasattr(thisComponent, "status") and thisComponent.status != FINISHED:
+            continueRoutine = True
+            break  # at least one component has not yet finished
+    
+    # refresh the screen
+    if continueRoutine:  # don't flip if this routine is over or we'll get a blank screen
+        win.flip()
+
+# --- Ending Routine "Start_EEG_Recording" ---
+for thisComponent in Start_EEG_RecordingComponents:
+    if hasattr(thisComponent, "setAutoDraw"):
+        thisComponent.setAutoDraw(False)
+if Start_EEG_trigger.status == STARTED:
+    win.callOnFlip(Start_EEG_trigger.setData, int())
+# the Routine "Start_EEG_Recording" was not non-slip safe, so reset the non-slip timer
 routineTimer.reset()
 
 # set up handler to look after randomisation of conditions etc
@@ -1496,7 +1584,6 @@ for thisTraining_Block in Training_Blocks:
     if Training_End.keys != None:  # we had a response
         Training_Blocks.addData('Training_End.rt', Training_End.rt)
     # Run 'End Routine' code from Training_End_2
-    eeg_trial_num = 0
     if Training_End.corr:
         Training_Blocks.finished = True
     # the Routine "End_of_Training_Start_Experiment" was not non-slip safe, so reset the non-slip timer
@@ -1869,7 +1956,7 @@ for thisBlock in Blocks:
             # Run 'End Routine' code from trigger_update
             #gray_trigger_index = 252
             if cur_triger >= 250:
-                cur_triger = 0
+                cur_triger = 1
             else:
                 cur_triger += 1
             
