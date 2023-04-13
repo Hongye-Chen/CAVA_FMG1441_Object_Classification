@@ -100,12 +100,6 @@ raw.plot_psd(fmax = 35)
 # How long the tmin and tmax should be? Images are contiguous to the gray screen
 reject_criteria = dict(eeg=50e-6)
 flat_criteria = dict(eeg = 50e-8)
-# autoreject()
-# from autoreject import get_rejection_threshold
-# reject_criteria = get_rejection_threshold(epochs)
-# epochs = mne.Epochs(raw, events, tmin=-0.1, tmax=0.4, baseline = Baseline,
-#                     reject = reject_criteria, flat = flat_criteria)
-# events = mne.find_events(raw, shortest_event = 1)
 events_len = len(events)
 CurIndex_event = 0
 converted_events = []
@@ -160,16 +154,11 @@ stimuli_epochs_plot_before.savefig(os.path.join(SubMatrix_path,subject_name + "_
 stimuli_epochs_plot_before = stimuli_epochs.average('eog').plot(**plot_kwargs)
 stimuli_epochs_plot_before.set_size_inches(27, 16)
 stimuli_epochs_plot_before.savefig(os.path.join(SubMatrix_path,subject_name + "_stimuli_epochsEOG_before(with reject criteria).png"))
-
-
 ####################################################################################################################
 
 
 ####################################################################################################################
 # Ocular correction (Gratton & Coles)
-# https://mne.tools/dev/auto_tutorials/preprocessing/35_artifact_correction_regression.html
-# https://mne.tools/dev/auto_tutorials/preprocessing/40_artifact_correction_ica.html
-# eog_epochs = mne.preprocessing.create_eog_epochs(raw, baseline = Baseline
 model_plain = EOGRegression(picks='eeg', picks_artifact='eog').fit(stimuli_epochs)
 stimuli_epochs_clean_plain = model_plain.apply(stimuli_epochs)
 stimuli_epochs_clean_plain.apply_baseline()
@@ -198,7 +187,6 @@ stimuli_epochs_eogout_plot_NoRestriction.savefig(os.path.join(SubMatrix_path,sub
 #     o Order of splines: 4
 #     o Maximal degree of Legendre polynomials: 10
 #     o Approximation parameter Lambda: 1.000000e-005
-# stimuli_epochs.pick_channels(EEG_64channels)
 stimuli_epochs_csd = mne.preprocessing.compute_current_source_density(stimuli_epochs_clean_plain, lambda2=1e-5, stiffness=4, n_legendre_terms=10)
 evoked_plot = stimuli_epochs_csd.average().plot(**plot_kwargs)
 evoked_plot.set_size_inches(27, 16)
@@ -216,17 +204,6 @@ evoked_plot_NoRestriction.savefig(os.path.join(SubMatrix_path,subject_name + "_s
 ####################################################################################################################
 
 
-####################################################################################################################
-# Make a plot of averaged epoched response, and save the plot
-# Evoked response?
-# evoked = stimuli_epochs_csd.average()
-# evoked_plot = evoked.plot()
-# evoked_plot.set_size_inches(27, 16)
-# evoked_plot.savefig(os.path.join(SubMatrix_path,subject_name + "_evoked_plot.png"))
-# evoked.save(os.path.join(file_path, (subject_name + "_ave.fif")))
-# stimuli_evoked = stimuli_epochs.average()
-# stimuli_evoked.plot()
 
-# Save the preprocessed data
-# stimuli_epochs.save(os.path.join(file_path, (subject_name + "_epo.fif")))
-####################################################################################################################
+
+
