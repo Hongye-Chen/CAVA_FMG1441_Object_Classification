@@ -73,7 +73,7 @@ raw.filter(l_freq=0.1, h_freq=30, method='fir', phase = 'zero', picks = 'all')
 # alueError: The requested filter length 1025 is too short for the requested 0.05 Hz transition band, which requires 33793 samples
 raw.notch_filter(freqs = (50, 60), picks = 'all')
 # plot_kwargs = dict(ylim=dict(eeg=(-10, 10), eog=(-5, 15)))
-raw.plot_psd(fmax = 35)
+# raw.plot_psd(fmax = 35)
 ####################################################################################################################
 
 
@@ -126,10 +126,10 @@ stimuli_epochs_NoRestriction = epochs_NoRestriction[stimuli_list]
 stimuli_epochs_NoRestriction.load_data()
 stimuli_epochs_plot_before_NoRestriction = stimuli_epochs_NoRestriction.average('eeg').plot(**plot_kwargs)
 stimuli_epochs_plot_before_NoRestriction.set_size_inches(27, 16)
-stimuli_epochs_plot_before_NoRestriction.savefig(os.path.join(SubMatrix_path,subject_name + "_stimuliEEG_epochs_before(4800 events).png"))
+stimuli_epochs_plot_before_NoRestriction.savefig(os.path.join(SubMatrix_path,subject_name + "_stimuliEEG_epochs_before(All events).png"))
 stimuli_epochs_plot_before_NoRestriction = stimuli_epochs_NoRestriction.average('eog').plot(**plot_kwargs)
 stimuli_epochs_plot_before_NoRestriction.set_size_inches(27, 16)
-stimuli_epochs_plot_before_NoRestriction.savefig(os.path.join(SubMatrix_path,subject_name + "_stimuliEOG_epochs_before(4800 events).png"))
+stimuli_epochs_plot_before_NoRestriction.savefig(os.path.join(SubMatrix_path,subject_name + "_stimuliEOG_epochs_before(All events).png"))
 
 #EEG & EOG plots (Use  AutoReject criteria)
 AutoReject = get_rejection_threshold(epochs_NoRestriction)
@@ -162,6 +162,7 @@ stimuli_epochs_plot_before.savefig(os.path.join(SubMatrix_path,subject_name + "_
 model_plain = EOGRegression(picks='eeg', picks_artifact='eog').fit(stimuli_epochs)
 stimuli_epochs_clean_plain = model_plain.apply(stimuli_epochs)
 stimuli_epochs_clean_plain.apply_baseline()
+stimuli_epochs_clean_plain.save(os.path.join(SubMatrix_path, subject_name + "-OC-epo.fif"), overwrite = False)
 stimuli_epochs_eogout_plot = stimuli_epochs_clean_plain.average().plot(**plot_kwargs)
 stimuli_epochs_eogout_plot.set_size_inches(27, 16)
 stimuli_epochs_eogout_plot.savefig(os.path.join(SubMatrix_path,subject_name + "_stimuli_epochs_after_OC(with reject criteria).png"))
@@ -169,6 +170,7 @@ stimuli_epochs_eogout_plot.savefig(os.path.join(SubMatrix_path,subject_name + "_
 model_plain_AutoReject = EOGRegression(picks='eeg', picks_artifact='eog').fit(stimuli_epochs_AutoReject)
 stimuli_epochs_clean_plain_AutoReject = model_plain_AutoReject.apply(stimuli_epochs_AutoReject)
 stimuli_epochs_clean_plain_AutoReject.apply_baseline()
+stimuli_epochs_clean_plain_AutoReject.save(os.path.join(SubMatrix_path, subject_name + "-OC-AutoReject-epo.fif"), overwrite = False)
 stimuli_epochs_eogout_plot_AutoReject = stimuli_epochs_clean_plain_AutoReject.average().plot(**plot_kwargs)
 stimuli_epochs_eogout_plot_AutoReject.set_size_inches(27, 16)
 stimuli_epochs_eogout_plot_AutoReject.savefig(os.path.join(SubMatrix_path,subject_name + "_stimuli_epochs_after_OC(AutoReject).png"))
@@ -176,9 +178,10 @@ stimuli_epochs_eogout_plot_AutoReject.savefig(os.path.join(SubMatrix_path,subjec
 model_plain_NoRestriction = EOGRegression(picks='eeg', picks_artifact='eog').fit(stimuli_epochs_NoRestriction)
 stimuli_epochs_clean_plain_NoRestriction = model_plain_NoRestriction.apply(stimuli_epochs_NoRestriction)
 stimuli_epochs_clean_plain_NoRestriction.apply_baseline()
+stimuli_epochs_clean_plain_NoRestriction.save(os.path.join(SubMatrix_path, subject_name + "-OC-NoRestriction-epo.fif"), overwrite = False)
 stimuli_epochs_eogout_plot_NoRestriction= stimuli_epochs_clean_plain_NoRestriction.average().plot(**plot_kwargs)
 stimuli_epochs_eogout_plot_NoRestriction.set_size_inches(27, 16)
-stimuli_epochs_eogout_plot_NoRestriction.savefig(os.path.join(SubMatrix_path,subject_name + "_stimuli_epochs_after_OC(4800 events).png"))
+stimuli_epochs_eogout_plot_NoRestriction.savefig(os.path.join(SubMatrix_path,subject_name + "_stimuli_epochs_after_OC(All events).png"))
 ####################################################################################################################
 
 
@@ -188,22 +191,26 @@ stimuli_epochs_eogout_plot_NoRestriction.savefig(os.path.join(SubMatrix_path,sub
 #     o Maximal degree of Legendre polynomials: 10
 #     o Approximation parameter Lambda: 1.000000e-005
 stimuli_epochs_csd = mne.preprocessing.compute_current_source_density(stimuli_epochs_clean_plain, lambda2=1e-5, stiffness=4, n_legendre_terms=10)
+stimuli_epochs_csd.save(os.path.join(SubMatrix_path,subject_name + "-OC&CSD-epo.fif"), overwrite = False)
 evoked_plot = stimuli_epochs_csd.average().plot(**plot_kwargs)
 evoked_plot.set_size_inches(27, 16)
 evoked_plot.savefig(os.path.join(SubMatrix_path,subject_name + "_stimuli_epochs_after_OC&CSD(with reject criteria).png"))
 
 stimuli_epochs_csd_AutoReject = mne.preprocessing.compute_current_source_density(stimuli_epochs_clean_plain_AutoReject, lambda2=1e-5, stiffness=4, n_legendre_terms=10)
+stimuli_epochs_csd_AutoReject.save(os.path.join(SubMatrix_path,subject_name + "-OC&CSD-AutoReject-epo.fif"), overwrite = False)
 evoked_plot_AutoReject = stimuli_epochs_csd_AutoReject.average().plot(**plot_kwargs)
 evoked_plot_AutoReject.set_size_inches(27, 16)
 evoked_plot_AutoReject.savefig(os.path.join(SubMatrix_path,subject_name + "_stimuli_epochs_after_OC&CSD(AutoReject).png"))
 
 stimuli_epochs_csd_NoRestriction = mne.preprocessing.compute_current_source_density(stimuli_epochs_clean_plain_NoRestriction, lambda2=1e-5, stiffness=4, n_legendre_terms=10)
+stimuli_epochs_csd_NoRestriction.save(os.path.join(SubMatrix_path,subject_name + "-OC&CSD-NoRestriction-epo.fif"), overwrite = False)
 evoked_plot_NoRestriction = stimuli_epochs_csd_NoRestriction.average().plot(**plot_kwargs)
 evoked_plot_NoRestriction.set_size_inches(27, 16)
-evoked_plot_NoRestriction.savefig(os.path.join(SubMatrix_path,subject_name + "_stimuli_epochs_after_OC&CSD(4800 events).png"))
+evoked_plot_NoRestriction.savefig(os.path.join(SubMatrix_path,subject_name + "_stimuli_epochs_after_OC&CSD(All events).png"))
 ####################################################################################################################
 
 
 
+####################################################################################################################
 
 
