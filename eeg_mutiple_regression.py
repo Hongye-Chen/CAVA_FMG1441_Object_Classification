@@ -6,6 +6,7 @@ import os
 import yaml
 from sklearn import linear_model
 import matplotlib.pyplot as plt
+import scipy.stats as stats
 
 # Enter subject number
 subject_name = input("Enther the subject number (in form of sub_x): ")
@@ -86,6 +87,8 @@ for i in range(len(events)):
     while len(Training_images_index[Training_images_index_keys[cur_image]]) <= repetition_counter:
         if cur_image == len(Training_images_index_keys) - 1:
             cur_image = 0
+            a[:, repetition_counter] = stats.zscore(a[:, repetition_counter])
+            b[:, repetition_counter + min_rep] = stats.zscore(b[:, repetition_counter + min_rep])
             repetition_counter += 1
         else:
             cur_image += 1
