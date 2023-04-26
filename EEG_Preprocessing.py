@@ -47,7 +47,7 @@ raw.pick(['eeg', 'eog', 'stim']).load_data()
 raw.set_eeg_reference(ref_channels=['left-ref', 'right-ref'])
 
 #What is our baseline?
-Baseline = (-0.099609375, 0)
+# Baseline = (-0.099609375, 0)
 
 # Is it okay we use the common location map? We have different placement of P5 and P6.
 biosemi64_montage = mne.channels.make_standard_montage(kind = 'biosemi64')
@@ -120,7 +120,7 @@ converted_events = np.array(converted_events)
 stimuli_list = [str(i) for i in list(range(1,4708))]
 
 #EEG & EOG plots (without reject criteria)
-epochs_NoRestriction = mne.Epochs(raw, events, tmin=-0.1, tmax=0.4, picks = EEG_64channels+eog_channels)
+epochs_NoRestriction = mne.Epochs(raw, converted_events, tmin=-0.1, tmax=0.4, picks = EEG_64channels+eog_channels)
 epochs_NoRestriction.load_data()
 stimuli_epochs_NoRestriction = epochs_NoRestriction[stimuli_list]
 stimuli_epochs_NoRestriction.load_data()
@@ -133,7 +133,7 @@ stimuli_epochs_plot_before_NoRestriction.savefig(os.path.join(SubMatrix_path,sub
 
 #EEG & EOG plots (Use  AutoReject criteria)
 AutoReject = get_rejection_threshold(epochs_NoRestriction)
-epochs_autoreject = mne.Epochs(raw, events, tmin=-0.1, tmax=0.4, baseline = Baseline, reject = AutoReject, picks = EEG_64channels+eog_channels)
+epochs_autoreject = mne.Epochs(raw, converted_events, tmin=-0.1, tmax=0.4, reject = AutoReject, picks = EEG_64channels+eog_channels)
 stimuli_epochs_AutoReject = epochs_autoreject[stimuli_list]
 stimuli_epochs_AutoReject.load_data()
 stimuli_epochs_plot_before_AutoReject = stimuli_epochs_AutoReject.average('eeg').plot(**plot_kwargs)
@@ -144,7 +144,7 @@ stimuli_epochs_plot_before_AutoReject.set_size_inches(27, 16)
 stimuli_epochs_plot_before_AutoReject.savefig(os.path.join(SubMatrix_path,subject_name + "_stimuliEOG_epochs_before(AutoReject).png"))
 
 #EEG & EOG plots (Use self-defined reject criteria)
-epochs = mne.Epochs(raw, events, tmin=-0.1, tmax=0.4, baseline = Baseline, reject = reject_criteria, flat = flat_criteria, picks = EEG_64channels+eog_channels)
+epochs = mne.Epochs(raw, converted_events, tmin=-0.1, tmax=0.4, reject = reject_criteria, flat = flat_criteria, picks = EEG_64channels+eog_channels)
 epochs.load_data()
 stimuli_epochs = epochs[stimuli_list]
 stimuli_epochs.load_data()
