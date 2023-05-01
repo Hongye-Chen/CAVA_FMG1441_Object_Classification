@@ -164,7 +164,7 @@ plt.figure(1)
 plt.xlabel('Time')
 plt.ylabel('R^2')
 plt.title(subject_name + "R^2")
-plt.legend(fontsize="20")
+# plt.legend(fontsize="20")
 plt.savefig(os.path.join(project_path, subject_name + "_R^2.png"))
 # plt.show()
 # Save r_sq
