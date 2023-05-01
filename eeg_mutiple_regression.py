@@ -17,7 +17,8 @@ min_rep = 5
 plt.rcParams['figure.figsize'] = [18, 12]
 
 project_path = r"C:\Users\15202\OneDrive\C_\University of Amsterdam\Intern\CAVA_project"
-epoch_path = os.path.join(project_path, "EEG_Preprocessing", subject_name, subject_name + "-OC&CSD-AutoReject-epo.fif")
+server_path = r"Y:\Projects\2023_Scholte_FMG1441"
+epoch_path = os.path.join(server_path, "Data", subject_name, "Preprocessed epochs", subject_name + "-OC&CSD-AutoReject-epo.fif")
 dic_path = os.path.join(project_path, "EventsID_Dictionary.csv")
 statistics_path = os.path.join(project_path, "Stimuli")
 # Read the Image dictionary
@@ -73,9 +74,10 @@ if missing_images_counter == 0:
     print("NO missing images!\n")
 
 # Use the index to make the design matrix
-x = []
+x = []    # Design matrix
 eeg_index = []
 repetition_counter = 0
+group_index = [0]
 cur_image = 0
 missing_statistics_counter = 0
 Training_images_index_keys = list(Training_images_index.keys())
@@ -86,9 +88,8 @@ for i in range(len(events)):
     cur_SC_para = [0] * min_rep  # Initiate SC parameters list for current image
     while len(Training_images_index[Training_images_index_keys[cur_image]]) <= repetition_counter:
         if cur_image == len(Training_images_index_keys) - 1:
+            group_index.append(i-missing_statistics_counter)
             cur_image = 0
-            a[:, repetition_counter] = stats.zscore(a[:, repetition_counter])
-            b[:, repetition_counter + min_rep] = stats.zscore(b[:, repetition_counter + min_rep])
             repetition_counter += 1
         else:
             cur_image += 1
@@ -107,14 +108,19 @@ for i in range(len(events)):
         cur_SC_para[repetition_counter] = sc_list[statistics_index]
         x.append(cur_CE_para + cur_SC_para)
     if cur_image == len(Training_images_index_keys) - 1:
+        group_index.append(i-missing_statistics_counter)
         cur_image = 0
         repetition_counter += 1
     else:
         cur_image += 1
-x = np.array(x)
 if missing_statistics_counter == 0:
     print("NO missing statistics!\n")
-# plt.pcolormesh(x)
+# Z-score each set of SC and CE in x
+x = np.array(x)
+t = np.array(x)
+for i in range(repetition_counter):
+    x[group_index[i]:group_index[i+1], i] = stats.zscore(x[group_index[i]:group_index[i+1], i])
+    x[group_index[i]:group_index[i+1], i + min_rep] = stats.zscore(x[group_index[i]:group_index[i+1], i + min_rep])
 # plt.imshow(x)
 # plt.show()
 
@@ -129,7 +135,7 @@ for i in range(len(channel_names)):
     cur_coef = []
     # Fit linear regression model for each time points
     for j in range(channel_data.shape[1]):
-        y = np.array(channel_data[:, j])
+        y = stats.zscore(np.array(channel_data[:, j]))
         regr = linear_model.LinearRegression().fit(x, y)
         # Save the Coefficients
         cur_coef.append(list(regr.coef_))
@@ -162,9 +168,7 @@ plt.legend(fontsize="20")
 plt.savefig(os.path.join(project_path, subject_name + "_R^2.png"))
 # plt.show()
 # Save r_sq
-# np.save(os.path.join(project_path, subject_name + "_Rsq.npy"), r_sq_list)
-# r_sq_df = pd.DataFrame(r_sq_list)
-# r_sq_df.to_csv(os.path.join(project_path, subject_name + "_Rsq.csv"), header = False, index = False)
+np.save(os.path.join(project_path, subject_name + "_Rsq.npy"), r_sq_list)
 
 # Setting parameters for the CE and SC plot
 plt.figure(2)
@@ -183,7 +187,7 @@ plt.legend(fontsize="20")
 plt.savefig(os.path.join(project_path, subject_name + "_SC.png"))
 # plt.show()
 # Save coefficients
-# np.save(os.path.join(project_path, subject_name + "_βcoef.npy"), coef_list)
+np.save(os.path.join(project_path, subject_name + "_βcoef.npy"), coef_list)
 
 
 # Plot Oz
@@ -193,31 +197,49 @@ cur_r_sq = []
 cur_coef = []
 # Fit linear regression model for each time points
 for j in range(Oz_data.shape[1]):
-    y = np.array(Oz_data[:, j])
+    y = stats.zscore(np.array(Oz_data[:, j]))
     regr = linear_model.LinearRegression().fit(x, y)
     # Save the Coefficients
     cur_coef.append(list(regr.coef_))
     cur_r_sq.append(regr.score(x, y))
 cur_r_sq = np.array(cur_r_sq)
-# plot the R^2
+# plot the Oz R^2
 plt.figure(4)
 plt.plot(sub_epochs.times, cur_r_sq)
 plt.xlabel('Time')
 plt.ylabel('R^2')
-plt.title(subject_name + "R^2")
+plt.title(subject_name + "R^2 (Oz)")
 plt.savefig(os.path.join(project_path, subject_name + "_R^2(Oz).png"))
 # Save Oz r_sq
-# np.save(os.path.join(project_path, subject_name + "_Rsq(Oz).npy"), cur_r_sq)
+np.save(os.path.join(project_path, subject_name + "_Rsq(Oz).npy"), cur_r_sq)
 
-# plot CEs for current channel
+# plot CEs for channel Oz
 plt.figure(5)
 plt.plot(sub_epochs.times, np.array(cur_coef)[:, 0:min_rep].mean(axis = 1), label = "CE")
 # plot SCs for current channel
 plt.plot(sub_epochs.times, np.array(cur_coef)[:, min_rep:].mean(axis = 1), label = "SC")
 plt.xlabel('Time')
 plt.ylabel('β-coefficients')
-plt.title(subject_name + "β-coefficients")
+plt.title(subject_name + "β-coefficients (Oz)")
 plt.legend(fontsize="20")
 plt.savefig(os.path.join(project_path, subject_name + "_β-coefficients(Oz).png"))
 # Save coefficients
-# np.save(os.path.join(project_path, subject_name + "_βcoef(Oz).npy"), cur_coef)
+np.save(os.path.join(project_path, subject_name + "_βcoef(Oz).npy"), cur_coef)
+
+# Plot the design matrix
+plt.figure(6)
+# Add intercepts column
+Intercept_constant = np.ones((x.shape[0],1))
+x = np.hstack((Intercept_constant,x))
+# # Save Design matrix
+np.save(os.path.join(project_path, subject_name + "_Design_Matrix.npy"), x)
+new_x = np.ma.masked_where(x == 0, x)
+cmap = plt.get_cmap('inferno')
+cmap.set_bad(color = 'white')
+plt.pcolormesh(new_x, cmap = cmap)
+plt.xlabel('Parameters')
+plt.ylabel('Training images')
+plt.title(subject_name + "Design Matrix")
+plt.colorbar()
+# plt.legend(fontsize="20")
+plt.savefig(os.path.join(project_path, subject_name + "_Design Matrix.png"))
