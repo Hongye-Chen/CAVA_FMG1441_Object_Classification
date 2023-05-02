@@ -11,7 +11,7 @@ import scipy.stats as stats
 # Enter subject number
 subject_name = input("Enther the subject number (in form of sub_x): ")
 
-# Define maximum repetition
+# Define minimum repetition
 min_rep = 5
 # Set the plot size
 plt.rcParams['figure.figsize'] = [18, 12]
