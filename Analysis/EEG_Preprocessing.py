@@ -56,7 +56,7 @@ eog_channels = ['left', 'right', 'above', 'below']
 # biosemi64_montage.plot()
 raw.set_montage(biosemi64_montage, on_missing = 'ignore')
 events = mne.find_events(raw)
-
+# events = mne.find_events(raw, min_duration = 2 / raw.info['sfreq'])
 # Define graphs parameters
 plot_kwargs = dict(ylim=dict(eeg=(-15, 15), eog=(-15, 15), csd = (-15,15)))
 

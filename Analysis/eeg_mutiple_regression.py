@@ -71,7 +71,7 @@ for i in range(len(sub_sti)):
         print("Didn't find ", sub_sti[i], " in the events\n")
         missing_images_counter += 1
 if missing_images_counter == 0:
-    print("NO missing images!\n")
+    print("NO missing images from the events!\n")
 
 # Use the index to make the design matrix
 x = []    # Design matrix
@@ -173,7 +173,7 @@ np.save(os.path.join(project_path, subject_name + "_Rsq.npy"), r_sq_list)
 # Setting parameters for the CE and SC plot
 plt.figure(2)
 plt.xlabel('Time')
-plt.ylabel('CE')
+plt.ylabel('β-coefficients (CE)')
 plt.title(subject_name + "β-coefficients (CE)")
 plt.legend(fontsize="20")
 plt.savefig(os.path.join(project_path, subject_name + "_CE.png"))
@@ -181,7 +181,7 @@ plt.savefig(os.path.join(project_path, subject_name + "_CE.png"))
 
 plt.figure(3)
 plt.xlabel('Time')
-plt.ylabel('SC')
+plt.ylabel('β-coefficients (SC)')
 plt.title(subject_name + "β-coefficients (SC)")
 plt.legend(fontsize="20")
 plt.savefig(os.path.join(project_path, subject_name + "_SC.png"))
@@ -208,7 +208,7 @@ plt.figure(4)
 plt.plot(sub_epochs.times, cur_r_sq)
 plt.xlabel('Time')
 plt.ylabel('R^2')
-plt.title(subject_name + "R^2 (Oz)")
+plt.title(subject_name + "_R^2 (Oz)")
 plt.savefig(os.path.join(project_path, subject_name + "_R^2(Oz).png"))
 # Save Oz r_sq
 np.save(os.path.join(project_path, subject_name + "_Rsq(Oz).npy"), cur_r_sq)
