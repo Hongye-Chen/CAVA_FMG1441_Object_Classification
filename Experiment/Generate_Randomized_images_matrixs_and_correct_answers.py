@@ -15,7 +15,7 @@ unique_images = 975
 target_images = 25
 trial_matrix = []       #Initiate the whole matrix
 total_trials = trials_block * total_blocks
-file_path = r"C:\Users\15202\OneDrive\C_\University of Amsterdam\Intern"
+file_path = " "
 file_path = os.path.normpath(file_path)
 
 high_repeat_range = 195  # How many images need to be presented more (8 times)      #int(altha * unique_images)
